@@ -1,0 +1,142 @@
+import { Spaceship } from "./game/spaceship";
+import type { Vector } from "./game/interfaces/vector";
+import "./style.css";
+import type { GameObject } from "./game/gameobject";
+import { Asteroid } from "./game/asteroid";
+import { World } from "./game/world";
+import * as Utils from "./game/utils";
+
+let offset: Vector = { x: 0, y: 0 };
+
+let gameObjects: GameObject[] = [];
+
+const gameArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+gameArea.setAttribute("style", "border: 1px solid white; display: block;");
+document.body.appendChild(gameArea);
+
+const worldBorder = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+worldBorder.setAttribute("cx", "0");
+worldBorder.setAttribute("cy", "0");
+worldBorder.setAttribute("r", "5000");
+worldBorder.setAttribute("fill", "none");
+worldBorder.setAttribute("stroke", "red");
+worldBorder.setAttribute("stroke-width", "2");
+gameArea.appendChild(worldBorder);
+
+function resizeGameArea() {
+  gameArea.setAttribute("width", `${window.innerWidth}`);
+  gameArea.setAttribute("height", `${window.innerHeight}`);
+}
+
+window.addEventListener("resize", resizeGameArea);
+resizeGameArea();
+
+const world = new World();
+world.onAdd = (gameObject: GameObject) => {
+  gameArea.appendChild(gameObject.getElement());
+};
+
+world.onRemove = (gameObject: GameObject) => {
+  gameArea.removeChild(gameObject.getElement());
+};
+
+let spaceship: Spaceship = new Spaceship({ x: 0, y: 0 }, 0);
+world.addObject(spaceship);
+
+let keysPressed: Record<string, boolean> = {};
+
+window.addEventListener("keydown", (event) => {
+  keysPressed[event.key] = true;
+});
+
+window.addEventListener("keyup", (event) => {
+  keysPressed[event.key.toLowerCase()] = false;
+});
+
+gameObjects.push(spaceship);
+
+for (let i = 0; i < 100; i++) {
+  const radius = Math.random() * 20 + 10;
+  const angle = Math.random() * 360;
+  const distance = Math.random() * (5000 - radius) + radius;
+  const x = Math.cos(angle) * distance;
+  const y = Math.sin(angle) * distance;
+  const asteroid = new Asteroid({ x, y }, angle, radius);
+  world.addObject(asteroid);
+}
+
+function handleInput() {
+  if (keysPressed["a"]) {
+    spaceship.targetAngularVelocity = -200;
+  } else if (keysPressed["d"]) {
+    spaceship.targetAngularVelocity = 200;
+  } else {
+    spaceship.targetAngularVelocity = 0;
+  }
+
+  if (keysPressed["w"]) {
+    spaceship.targetVelocity = 300;
+  } else if (keysPressed["s"]) {
+    spaceship.targetVelocity = -300;
+  } else {
+    spaceship.targetVelocity = 0;
+  }
+
+  if (keysPressed[" "]) {
+    spaceship.shoot();
+  }
+}
+
+const favicon = document.createElement("link");
+favicon.rel = "icon";
+document.head.appendChild(favicon);
+
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d")!;
+canvas.width = 128;
+canvas.height = 128;
+
+function updateFavicon() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const hullPoints = [
+    Utils.getVectorFromAngle(spaceship.rotation + 0, 64),
+    Utils.getVectorFromAngle(spaceship.rotation + 140, 64),
+    Utils.getVectorFromAngle(spaceship.rotation + 180, 32),
+    Utils.getVectorFromAngle(spaceship.rotation + -140, 64),
+  ];
+
+  ctx.beginPath();
+  ctx.moveTo(hullPoints[0].x + canvas.width / 2, hullPoints[0].y + canvas.height / 2);
+  for (let i = 1; i < hullPoints.length; i++) {
+    ctx.lineTo(hullPoints[i].x + canvas.width / 2, hullPoints[i].y + canvas.height / 2);
+  }
+
+  ctx.closePath();
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 5;
+  ctx.stroke();
+
+  favicon.href = canvas.toDataURL("image/png");
+}
+
+let lastUpdate: number = 0;
+function update() {
+  const now = performance.now();
+  const deltaTime = (now - lastUpdate) / 1000;
+  lastUpdate = now;
+
+  handleInput();
+
+  world.update(deltaTime);
+
+  offset.x = spaceship.position.x - window.innerWidth / 2;
+  offset.y = spaceship.position.y - window.innerHeight / 2;
+  gameArea.setAttribute("viewBox", `${offset.x} ${offset.y} ${window.innerWidth} ${window.innerHeight}`);
+
+  requestAnimationFrame(update);
+}
+
+setInterval(updateFavicon, 1000 / 30);
+
+update();

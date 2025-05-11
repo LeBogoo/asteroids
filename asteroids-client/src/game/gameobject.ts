@@ -1,0 +1,86 @@
+import type { Moveable } from "./interfaces/moveable";
+import type { Updateable } from "./interfaces/updateable";
+import type { Vector } from "./interfaces/vector";
+import * as Utils from "./utils";
+import type { World } from "./world";
+
+export abstract class GameObject implements Moveable, Updateable {
+  position: Vector;
+  targetVelocity: number;
+  velocity: number;
+  rotation: number;
+  targetAngularVelocity: number;
+  angularVelocity: number;
+  world: World | null = null;
+  lifeTime: number = 0;
+
+  radius: number = 0;
+
+  element!: SVGElement;
+
+  constructor(pos: Vector, angle: number, radius: number) {
+    this.position = pos;
+    this.targetVelocity = 0;
+    this.velocity = 0;
+    this.rotation = angle;
+    this.targetAngularVelocity = 0;
+    this.angularVelocity = 0;
+    this.radius = radius;
+  }
+
+  getElement(): SVGElement {
+    if (this.element) {
+      return this.element;
+    }
+
+    this.element = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    this.element.setAttribute(
+      "transform",
+      `translate(${this.position.x}, ${this.position.y}) rotate(${this.rotation})`
+    );
+
+    if (localStorage.getItem("debug") === "true") {
+      this.element.setAttribute("stroke", "red");
+      this.element.setAttribute("stroke-width", "1");
+      this.element.setAttribute("fill", "none");
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("r", `${this.radius}`);
+      this.element.appendChild(circle);
+
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", "0");
+      line.setAttribute("y1", "0");
+      line.setAttribute("x2", "0");
+      line.setAttribute("y2", `${-this.radius}`);
+      line.setAttribute("stroke", "green");
+      line.setAttribute("stroke-width", "2");
+      this.element.appendChild(line);
+    }
+
+    return this.element;
+  }
+
+  updateElement(): void {
+    this.element.setAttribute(
+      "transform",
+      `translate(${this.position.x}, ${this.position.y}) rotate(${this.rotation})`
+    );
+  }
+
+  update(deltaTime: number): void {
+    this.lifeTime += deltaTime;
+    this.velocity = Utils.lerp(this.velocity, this.targetVelocity, 0.02);
+    this.angularVelocity = Utils.lerp(this.angularVelocity, this.targetAngularVelocity, 0.05);
+    this.position.x += Math.sin((this.rotation * Math.PI) / 180) * this.velocity * deltaTime;
+    this.position.y -= Math.cos((this.rotation * Math.PI) / 180) * this.velocity * deltaTime;
+    this.rotation += this.angularVelocity * deltaTime;
+  }
+
+  isColliding(other: GameObject): boolean {
+    const dx = this.position.x - other.position.x;
+    const dy = this.position.y - other.position.y;
+    const distanceSquared = dx * dx + dy * dy;
+    const radiusSum = this.radius + other.radius;
+    return distanceSquared < radiusSum * radiusSum;
+  }
+}
