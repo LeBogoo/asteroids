@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:uuid/uuid.dart';
 
 import 'interfaces/collidable.dart';
 import 'interfaces/moveable.dart';
@@ -27,6 +28,8 @@ abstract class GameObject implements Moveable, Updateable, Collidable {
   double angularVelocity = 0;
 
   World? world;
+
+  final String id = Uuid().v4();
 
   double lifeTime = 0.0;
   double radius = 0.0;

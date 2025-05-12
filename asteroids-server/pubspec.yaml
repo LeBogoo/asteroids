@@ -14,5 +14,6 @@ dependencies:
   shelf_router: ^1.1.0
   shelf_web_socket: ^3.0.0
   shelf_static: ^1.1.0
+  uuid: ^4.5.1
   packet_networking:
     path: ./packages/packet-networking
