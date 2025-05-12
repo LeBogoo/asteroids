@@ -1,31 +1,50 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:packet_networking/packet_networking.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf_static/shelf_static.dart';
-import 'package:packet_networking/packet_networking.dart';
 
-import 'handlers/version_handler.dart';
-import 'middlewares/cors_middleware.dart';
-
+import './game/player.dart';
+import './game/world.dart';
 import './game/vector.dart';
-
-import './packets/incoming/join_game_packet.dart';
+import './game/asteroid.dart';
+import './handlers/version_handler.dart';
+import './middlewares/cors_middleware.dart';
 import './packets/incoming/input_packet.dart';
+import './packets/incoming/join_game_packet.dart';
 
 class Server {
   final Router _router = Router();
   final PacketServer _packetServer = PacketServer("asteroids");
+  final World world = World();
 
   Server() {
     _setupRoutes();
 
-    _packetServer.onConnection((connection) {});
+    world.addObject(Asteroid(Vector(0, -50), 0, 20));
+
+    _packetServer.onConnection((connection) {
+      connection.on<JoinGamePacket>((packet) {
+        Player(username: packet.username, world: world, connection: connection);
+      });
+    });
 
     _packetServer.definePacketTypes({
       JoinGamePacket.empty(): JoinGamePacket.fromJson,
       InputPacket.empty(): InputPacket.fromJson,
+    });
+
+    // call world.update(deltaTime) 60 times a second. calculate deltaTime from the time elapsed since the last call
+    DateTime lastTime = DateTime.now();
+    Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      final now = DateTime.now();
+      final deltaTime = now.difference(lastTime).inMilliseconds / 1000.0;
+      lastTime = now;
+
+      world.update(deltaTime);
     });
   }
 

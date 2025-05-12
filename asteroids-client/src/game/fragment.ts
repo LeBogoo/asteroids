@@ -4,12 +4,13 @@ import type { Vector } from "./interfaces/vector";
 import * as Utils from "./utils";
 
 export class Fragment extends GameObject {
+  type = "fragment";
   customVelocity: Vector;
   face: Face;
   deathTime: number;
 
-  constructor(pos: Vector, radius: number, face: Face, velocity: Vector) {
-    super(pos, 0, radius);
+  constructor(id: string, pos: Vector, radius: number, face: Face, velocity: Vector) {
+    super(id, pos, 0, radius);
     this.face = face;
     this.customVelocity = velocity;
 
@@ -47,5 +48,26 @@ export class Fragment extends GameObject {
     if (this.lifeTime > this.deathTime) {
       this.world?.removeObject(this);
     }
+  }
+
+  updateWith(gameObject: GameObject): void {
+    super.updateWith(gameObject);
+    this.customVelocity = (gameObject as Fragment).customVelocity;
+  }
+
+  static fromObject(obj: any): Fragment {
+    const fragment = new Fragment(
+      "",
+      { x: 0, y: 0 },
+      0,
+      [
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+        { x: 0, y: 0 },
+      ],
+      { x: 0, y: 0 }
+    );
+    Object.assign(fragment, obj);
+    return fragment;
   }
 }

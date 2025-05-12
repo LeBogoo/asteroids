@@ -4,8 +4,8 @@ class InputPacket extends IncomingPacket {
   @override
   String type = "input";
 
-  int x = 0;
-  int y = 0;
+  double x = 0;
+  double y = 0;
   bool shoot = false;
 
   InputPacket.empty();
@@ -17,9 +17,11 @@ class InputPacket extends IncomingPacket {
   });
 
   factory InputPacket.fromJson(Map<String, dynamic> json) {
+    print(json);
+
     return InputPacket(
-      x: json["x"],
-      y: json["y"],
+      x: double.parse(json["x"].toString()),
+      y: double.parse(json["y"].toString()),
       shoot: json["shoot"] ?? false,
     );
   }

@@ -1,4 +1,4 @@
-import 'vector.dart';
+import './vector.dart';
 
 class Face {
   Vector a;

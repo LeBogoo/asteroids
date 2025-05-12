@@ -2,13 +2,21 @@ import { Spaceship } from "./game/spaceship";
 import type { Vector } from "./game/interfaces/vector";
 import "./style.css";
 import type { GameObject } from "./game/gameobject";
-import { Asteroid } from "./game/asteroid";
 import { World } from "./game/world";
 import * as Utils from "./game/utils";
+import { Connection } from "./networking/connection";
+import type { JoinedGamePacket } from "./networking/packets/joined-game-packet";
+import { JoinGamePacket } from "./networking/packets/join-game-packet";
+import type { LeftGamePacket } from "./networking/packets/lef-game-packet";
+import type { SpawnPacket } from "./networking/packets/spawn-packet";
+import type { YouPacket } from "./networking/packets/you-packet";
+import { InputPacket } from "./networking/packets/input-packet";
+import type { UpdatePacket } from "./networking/packets/update-packet";
+import { Asteroid } from "./game/asteroid";
+import { Bullet } from "./game/bullet";
+import { Fragment } from "./game/fragment";
 
 let offset: Vector = { x: 0, y: 0 };
-
-let gameObjects: GameObject[] = [];
 
 const gameArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 gameArea.setAttribute("style", "border: 1px solid white; display: block;");
@@ -40,50 +48,125 @@ world.onRemove = (gameObject: GameObject) => {
   gameArea.removeChild(gameObject.getElement());
 };
 
-let spaceship: Spaceship = new Spaceship({ x: 0, y: 0 }, 0);
-world.addObject(spaceship);
+const connection = new Connection("ws://localhost:8080/api/ws");
+let id!: string;
+let spaceship: Spaceship | null = null;
+
+connection.on<YouPacket>("you", (e) => {
+  id = e.id;
+});
+
+connection.on<JoinedGamePacket>("joined_game", (e) => {
+  console.log("Player " + e.username + " joined the game with ID " + e.id);
+});
+
+connection.on<LeftGamePacket>("left_game", (e) => {
+  console.log("Player " + e.username + " left the game with ID " + e.id);
+});
+
+connection.on<SpawnPacket>("spawn", (e) => {
+  switch (e.object.type) {
+    case "spaceship":
+      const ship = Spaceship.fromObject(e.object);
+      if (e.object.id === id) spaceship = ship;
+
+      world.addObject(ship);
+      break;
+
+    case "asteroid":
+      world.addObject(Asteroid.fromObject(e.object));
+      break;
+
+    case "bullet":
+      world.addObject(Bullet.fromObject(e.object));
+      break;
+
+    case "fragment":
+      world.addObject(Fragment.fromObject(e.object));
+      break;
+
+    default:
+      break;
+  }
+});
+
+connection.on<UpdatePacket>("update", (e) => {
+  world.updateObject(e.object);
+
+  // connection.close();
+});
+
+setTimeout(() => {
+  connection.send(new JoinGamePacket("LeBogo"));
+}, 1000);
 
 let keysPressed: Record<string, boolean> = {};
 
+const inputs = new InputPacket(0, 0, false);
+
 window.addEventListener("keydown", (event) => {
-  keysPressed[event.key] = true;
+  keysPressed[event.key.toLowerCase()] = true;
+
+  sendInput();
 });
 
 window.addEventListener("keyup", (event) => {
   keysPressed[event.key.toLowerCase()] = false;
+  sendInput();
 });
 
-gameObjects.push(spaceship);
+function sendInput() {
+  if (!spaceship) return;
 
-for (let i = 0; i < 100; i++) {
-  const radius = Math.random() * 20 + 10;
-  const angle = Math.random() * 360;
-  const distance = Math.random() * (5000 - radius) + radius;
-  const x = Math.cos(angle) * distance;
-  const y = Math.sin(angle) * distance;
-  const asteroid = new Asteroid({ x, y }, angle, radius);
-  world.addObject(asteroid);
-}
+  let changed = false;
 
-function handleInput() {
-  if (keysPressed["a"]) {
-    spaceship.targetAngularVelocity = -200;
-  } else if (keysPressed["d"]) {
-    spaceship.targetAngularVelocity = 200;
-  } else {
-    spaceship.targetAngularVelocity = 0;
+  if (keysPressed["w"] && inputs.y != 1) {
+    inputs.y = 1;
+    changed = true;
   }
 
-  if (keysPressed["w"]) {
-    spaceship.targetVelocity = 300;
-  } else if (keysPressed["s"]) {
-    spaceship.targetVelocity = -300;
-  } else {
-    spaceship.targetVelocity = 0;
+  if (!keysPressed["w"] && inputs.y == 1) {
+    inputs.y = 0;
+    changed = true;
   }
 
-  if (keysPressed[" "]) {
-    spaceship.shoot();
+  if (keysPressed["s"] && inputs.y != -1) {
+    inputs.y = -1;
+    changed = true;
+  }
+
+  if (!keysPressed["s"] && inputs.y == -1) {
+    inputs.y = 0;
+    changed = true;
+  }
+
+  if (keysPressed["a"] && inputs.x != -1) {
+    inputs.x = -1;
+    changed = true;
+  }
+  if (!keysPressed["a"] && inputs.x == -1) {
+    inputs.x = 0;
+    changed = true;
+  }
+  if (keysPressed["d"] && inputs.x != 1) {
+    inputs.x = 1;
+    changed = true;
+  }
+  if (!keysPressed["d"] && inputs.x == 1) {
+    inputs.x = 0;
+    changed = true;
+  }
+  if (keysPressed["space"] && !inputs.shoot) {
+    inputs.shoot = true;
+    changed = true;
+  }
+  if (!keysPressed["space"] && inputs.shoot) {
+    inputs.shoot = false;
+    changed = true;
+  }
+
+  if (changed) {
+    connection.send(inputs);
   }
 }
 
@@ -97,6 +180,8 @@ canvas.width = 128;
 canvas.height = 128;
 
 function updateFavicon() {
+  if (!spaceship) return;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const hullPoints = [
@@ -126,12 +211,12 @@ function update() {
   const deltaTime = (now - lastUpdate) / 1000;
   lastUpdate = now;
 
-  handleInput();
-
   world.update(deltaTime);
 
-  offset.x = spaceship.position.x - window.innerWidth / 2;
-  offset.y = spaceship.position.y - window.innerHeight / 2;
+  if (spaceship) {
+    offset.x = spaceship.position.x - window.innerWidth / 2;
+    offset.y = spaceship.position.y - window.innerHeight / 2;
+  }
   gameArea.setAttribute("viewBox", `${offset.x} ${offset.y} ${window.innerWidth} ${window.innerHeight}`);
 
   requestAnimationFrame(update);

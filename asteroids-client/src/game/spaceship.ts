@@ -1,28 +1,13 @@
-import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
 import type { Vector } from "./interfaces/vector";
 import * as Utils from "./utils";
 
-const SHOOT_COOLDOWN = 250;
-
 export class Spaceship extends GameObject {
+  type = "spaceship";
   lastShot: number = 0;
 
-  constructor(pos: Vector, angle: number) {
-    super(pos, angle, 15);
-  }
-
-  shoot(): void {
-    if (Date.now() - this.lastShot < SHOOT_COOLDOWN) {
-      return;
-    }
-    this.lastShot = Date.now();
-    const pos = Utils.getVectorFromAngle(this.rotation, this.radius);
-    pos.x += this.position.x;
-    pos.y += this.position.y;
-    const bullet = new Bullet(pos, this.rotation);
-    bullet.world = this.world;
-    this.world?.addObject(bullet);
+  constructor(id: string, pos: Vector, angle: number) {
+    super(id, pos, angle, 15);
   }
 
   getElement(): SVGElement {
@@ -47,5 +32,11 @@ export class Spaceship extends GameObject {
     element.appendChild(hull);
 
     return element;
+  }
+
+  static fromObject(obj: any): Spaceship {
+    const spaceship = new Spaceship("", { x: 0, y: 0 }, 0);
+    Object.assign(spaceship, obj);
+    return spaceship;
   }
 }

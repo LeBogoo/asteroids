@@ -3,7 +3,7 @@ import 'dart:math';
 import './gameobject.dart';
 import './utils.dart';
 import './vector.dart';
-import 'face.dart';
+import './face.dart';
 
 class Fragment extends GameObject {
   String get type => "fragment";

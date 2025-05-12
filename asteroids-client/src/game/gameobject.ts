@@ -5,6 +5,8 @@ import * as Utils from "./utils";
 import type { World } from "./world";
 
 export abstract class GameObject implements Moveable, Updateable {
+  abstract type: string;
+  id: string;
   position: Vector;
   targetVelocity: number;
   velocity: number;
@@ -18,7 +20,8 @@ export abstract class GameObject implements Moveable, Updateable {
 
   element!: SVGElement;
 
-  constructor(pos: Vector, angle: number, radius: number) {
+  constructor(id: string, pos: Vector, angle: number, radius: number) {
+    this.id = id;
     this.position = pos;
     this.targetVelocity = 0;
     this.velocity = 0;
@@ -82,5 +85,16 @@ export abstract class GameObject implements Moveable, Updateable {
     const distanceSquared = dx * dx + dy * dy;
     const radiusSum = this.radius + other.radius;
     return distanceSquared < radiusSum * radiusSum;
+  }
+
+  updateWith(gameObject: GameObject) {
+    this.position = gameObject.position;
+    this.targetVelocity = gameObject.targetVelocity;
+    this.velocity = gameObject.velocity;
+    this.rotation = gameObject.rotation;
+    this.targetAngularVelocity = gameObject.targetAngularVelocity;
+    this.angularVelocity = gameObject.angularVelocity;
+    this.lifeTime = gameObject.lifeTime;
+    this.radius = gameObject.radius;
   }
 }

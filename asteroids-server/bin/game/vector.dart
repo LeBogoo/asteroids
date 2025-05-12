@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class Vector {
   double x;
   double y;
@@ -23,6 +25,10 @@ class Vector {
 
   Vector operator /(double scalar) {
     return Vector(x / scalar, y / scalar);
+  }
+
+  double distanceTo(Vector other) {
+    return sqrt(pow(x - other.x, 2) + pow(y - other.y, 2));
   }
 
   Map<String, dynamic> toJson() {

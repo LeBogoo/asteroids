@@ -20,16 +20,6 @@ class WebsocketConnection extends Connection {
     return webSocket!.sink;
   }
 
-  int? get closeCode {
-    if (webSocket == null) throw Exception("WebSocket is null");
-    return webSocket!.closeCode;
-  }
-
-  String? get closeReason {
-    if (webSocket == null) throw Exception("WebSocket is null");
-    return webSocket!.closeReason;
-  }
-
   final Map<Type, List<Function>> callbacks = {};
   final Map<Type, List<Function>> preservedCallbacks = {};
   final List<Function()> _disconnectCallbacks = [];
@@ -66,15 +56,6 @@ class WebsocketConnection extends Connection {
           ));
         }
       },
-      onDone: () {
-        print(
-            "[Connection] WebSocket done - Code: $closeCode, Reason: $closeReason");
-        disconnect();
-      },
-      onError: (error) {
-        print("[Connection] WebSocket error: $error");
-        disconnect();
-      },
       cancelOnError: true,
     );
 
@@ -84,7 +65,7 @@ class WebsocketConnection extends Connection {
     });
 
     sink.done.then((value) {
-      print("❌ Connection closed: $closeCode $closeReason");
+      print("❌ Connection closed");
       disconnect();
     });
 

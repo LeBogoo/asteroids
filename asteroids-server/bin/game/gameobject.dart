@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:math';
+
 import 'package:uuid/uuid.dart';
 
-import 'interfaces/collidable.dart';
-import 'interfaces/moveable.dart';
-import 'interfaces/updateable.dart';
-import 'utils.dart';
-import 'vector.dart';
-import 'world.dart';
+import '../packets/outgoing/update_packet.dart';
+import './interfaces/collidable.dart';
+import './interfaces/moveable.dart';
+import './interfaces/updateable.dart';
+import './utils.dart';
+import './vector.dart';
+import './world.dart';
 
 class EmptyGameObject extends GameObject {
   @override
@@ -47,7 +50,15 @@ abstract class GameObject implements Moveable, Updateable, Collidable {
     return EmptyGameObject();
   }
 
-  GameObject(this.position, this.rotation, this.radius);
+  GameObject(this.position, this.rotation, this.radius) {
+    Timer.periodic(Duration(seconds: 5), (Timer timer) {
+      if (world == null) {
+        timer.cancel();
+        return;
+      }
+      world!.broadcast(UpdatePacket(object: this));
+    });
+  }
 
   @override
   void update(double deltaTime) {
@@ -73,7 +84,9 @@ abstract class GameObject implements Moveable, Updateable, Collidable {
       "type": type,
       "position": position.toJson(),
       "rotation": rotation,
+      "targetVelocity": targetVelocity,
       "velocity": velocity,
+      "targetAngularVelocity": targetAngularVelocity,
       "angularVelocity": angularVelocity,
       "radius": radius,
     };
