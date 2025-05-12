@@ -7,6 +7,7 @@ class PacketRegistry {
 
   static void registerPacket(IncomingPacket packet, PacketFactory factory) {
     _registry[packet.type] = factory;
+    print("[PacketRegistry] Registered packet type: ${packet.type}");
   }
 
   static IncomingPacket fromJson(Map<String, dynamic> json) {

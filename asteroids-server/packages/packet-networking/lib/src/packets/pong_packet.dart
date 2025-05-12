@@ -4,9 +4,9 @@ class PongPacket extends IncomingPacket {
   @override
   String type = "pong";
 
-  final int timestamp;
+  int timestamp = 0;
 
-  PongPacket.empty() : timestamp = 0;
+  PongPacket.empty();
 
   PongPacket({
     required this.timestamp,

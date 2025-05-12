@@ -40,10 +40,16 @@ class PacketServer {
       protocols: [allowedProtocol],
     );
 
-    registerPacketTypes();
+    _registerPacketTypes();
   }
 
-  void registerPacketTypes() {
+  void definePacketTypes(Map<IncomingPacket, PacketFactory> packets) {
+    for (var entry in packets.entries) {
+      PacketRegistry.registerPacket(entry.key, entry.value);
+    }
+  }
+
+  void _registerPacketTypes() {
     PacketRegistry.registerPacket(PongPacket.empty(), PongPacket.fromJson);
   }
 

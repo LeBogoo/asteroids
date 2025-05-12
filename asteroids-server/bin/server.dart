@@ -9,6 +9,11 @@ import 'package:packet_networking/packet_networking.dart';
 import 'handlers/version_handler.dart';
 import 'middlewares/cors_middleware.dart';
 
+import './game/vector.dart';
+
+import './packets/incoming/join_game_packet.dart';
+import './packets/incoming/input_packet.dart';
+
 class Server {
   final Router _router = Router();
   final PacketServer _packetServer = PacketServer("asteroids");
@@ -16,8 +21,11 @@ class Server {
   Server() {
     _setupRoutes();
 
-    _packetServer.onConnection((connection) {
-      connection.send(ErrorPacket(error: "backend not implemented"));
+    _packetServer.onConnection((connection) {});
+
+    _packetServer.definePacketTypes({
+      JoinGamePacket.empty(): JoinGamePacket.fromJson,
+      InputPacket.empty(): InputPacket.fromJson,
     });
   }
 
