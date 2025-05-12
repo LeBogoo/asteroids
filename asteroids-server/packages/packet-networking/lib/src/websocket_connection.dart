@@ -49,7 +49,7 @@ class WebsocketConnection extends Connection {
           return;
         }
         try {
-          IncomingPacket packet = PacketRegistry.instance.fromJson(jsonMessage);
+          IncomingPacket packet = PacketRegistry.fromJson(jsonMessage);
           print("↙️ ${packet.stringify()}");
 
           // get type of packet

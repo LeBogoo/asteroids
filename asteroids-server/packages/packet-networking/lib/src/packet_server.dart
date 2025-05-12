@@ -6,7 +6,6 @@ import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:shelf/shelf.dart';
 
 class PacketServer {
-  late final PacketRegistry registry;
   final List<Connection> _connections = [];
   List<Connection> get connections => _connections;
   final List<Function(Connection)> _onConnectionCallbacks = [];
@@ -40,6 +39,12 @@ class PacketServer {
       },
       protocols: [allowedProtocol],
     );
+
+    registerPacketTypes();
+  }
+
+  void registerPacketTypes() {
+    PacketRegistry.registerPacket(PongPacket.empty(), PongPacket.fromJson);
   }
 
   void onConnection(void Function(Connection connection) callback) {

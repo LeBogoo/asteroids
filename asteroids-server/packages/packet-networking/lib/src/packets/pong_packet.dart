@@ -1,8 +1,12 @@
 import 'package:packet_networking/packet_networking.dart';
 
-@Packet("pong", PacketRegistry.genericNamespace)
-class PongPacket implements IncomingPacket {
+class PongPacket extends IncomingPacket {
+  @override
+  String type = "pong";
+
   final int timestamp;
+
+  PongPacket.empty() : timestamp = 0;
 
   PongPacket({
     required this.timestamp,

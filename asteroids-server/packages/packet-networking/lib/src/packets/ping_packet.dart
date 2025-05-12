@@ -1,7 +1,9 @@
 import 'package:packet_networking/packet_networking.dart';
 
-@Packet("ping", PacketRegistry.genericNamespace)
 class PingPacket extends OutgoingPacket {
+  @override
+  String type = "ping";
+
   final int timestamp;
 
   PingPacket({

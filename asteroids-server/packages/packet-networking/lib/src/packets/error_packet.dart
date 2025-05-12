@@ -1,7 +1,9 @@
 import 'package:packet_networking/packet_networking.dart';
 
-@Packet("error", PacketRegistry.genericNamespace)
 class ErrorPacket extends OutgoingPacket {
+  @override
+  String type = "error";
+
   final String error;
   final Map<String, dynamic> data;
 

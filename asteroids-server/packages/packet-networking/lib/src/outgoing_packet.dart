@@ -1,21 +1,11 @@
-import 'dart:mirrors';
-
 abstract class OutgoingPacket {
+  abstract String type;
+
   Map<String, dynamic> toJson() {
     return {
-      "type": "${namespace}_$type",
+      "type": type,
     };
   }
 
   String stringify();
-}
-
-extension OutgoingPacketExtension on OutgoingPacket {
-  String get type {
-    return reflectClass(runtimeType).metadata.first.reflectee.type;
-  }
-
-  String get namespace {
-    return reflectClass(runtimeType).metadata.first.reflectee.namespace;
-  }
 }
