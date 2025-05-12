@@ -82,4 +82,14 @@ class Asteroid extends GameObject {
 
     return points;
   }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      ...super.toJson(),
+      "points": points.map((point) => point.toJson()).toList(),
+      "customVelocity": _customVelocity.toJson(),
+      "radius": radius,
+    };
+  }
 }

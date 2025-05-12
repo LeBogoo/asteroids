@@ -29,4 +29,14 @@ class Fragment extends GameObject {
       world?.removeObject(this);
     }
   }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      ...super.toJson(),
+      "face": face.toJson(),
+      "customVelocity": _customVelocity.toJson(),
+      "deathTime": deathTime,
+    };
+  }
 }

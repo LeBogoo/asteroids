@@ -24,4 +24,11 @@ class Vector {
   Vector operator /(double scalar) {
     return Vector(x / scalar, y / scalar);
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'x': x,
+      'y': y,
+    };
+  }
 }

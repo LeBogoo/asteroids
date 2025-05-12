@@ -26,4 +26,12 @@ class Face {
       (a.y + b.y + c.y) / 3,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'a': a.toJson(),
+      'b': b.toJson(),
+      'c': c.toJson(),
+    };
+  }
 }

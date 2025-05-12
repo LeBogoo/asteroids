@@ -66,4 +66,16 @@ abstract class GameObject implements Moveable, Updateable, Collidable {
     var radiusSum = radius + other.radius;
     return distanceSquared < radiusSum * radiusSum;
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "type": type,
+      "position": position.toJson(),
+      "rotation": rotation,
+      "velocity": velocity,
+      "angularVelocity": angularVelocity,
+      "radius": radius,
+    };
+  }
 }
