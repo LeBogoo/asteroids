@@ -8,7 +8,16 @@ import 'utils.dart';
 import 'vector.dart';
 import 'world.dart';
 
+class EmptyGameObject extends GameObject {
+  @override
+  String type = "empty";
+
+  EmptyGameObject() : super(Vector(0, 0), 0, 2);
+}
+
 abstract class GameObject implements Moveable, Updateable, Collidable {
+  String get type;
+
   @override
   Vector position;
 
@@ -33,6 +42,10 @@ abstract class GameObject implements Moveable, Updateable, Collidable {
 
   double lifeTime = 0.0;
   double radius = 0.0;
+
+  static GameObject empty() {
+    return EmptyGameObject();
+  }
 
   GameObject(this.position, this.rotation, this.radius);
 

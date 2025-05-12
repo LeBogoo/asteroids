@@ -10,6 +10,8 @@ import './vector.dart';
 const EXPLODE_FORCE = 1;
 
 class Asteroid extends GameObject {
+  String get type => "asteroid";
+
   Vector _customVelocity;
   List<Vector> points = _generateAsteroidPoints();
 

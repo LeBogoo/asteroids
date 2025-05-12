@@ -6,6 +6,8 @@ import './vector.dart';
 import 'face.dart';
 
 class Fragment extends GameObject {
+  String get type => "fragment";
+
   Vector _customVelocity;
   Face face;
   double deathTime;

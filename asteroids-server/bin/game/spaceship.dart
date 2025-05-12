@@ -6,6 +6,8 @@ import './vector.dart';
 const SHOOT_COOLDOWN = 250;
 
 class Spaceship extends GameObject {
+  String get type => "spaceship";
+
   DateTime lastShot = DateTime.fromMillisecondsSinceEpoch(0);
 
   Spaceship(Vector pos, double angle) : super(pos, angle, 15);

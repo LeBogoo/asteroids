@@ -4,6 +4,8 @@ import './gameobject.dart';
 import './vector.dart';
 
 class Bullet extends GameObject {
+  String get type => "bullet";
+
   static const double BULLET_SPEED = 500;
   static const double MAX_BULLET_LIFETIME = 1000 * 2;
   DateTime spawnTime = DateTime.now();
