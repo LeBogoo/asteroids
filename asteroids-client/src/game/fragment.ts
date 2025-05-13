@@ -20,8 +20,12 @@ export class Fragment extends GameObject {
     this.deathTime = 5 + Math.random() * 10;
   }
 
-  explode(_bullet: Bullet): void {
-    SoundManager.playSound("explode_small");
+  explode(bullet: Bullet): void {
+    if (bullet.parent) {
+      const distance = this.position.distanceTo(bullet.parent.position);
+      const volume = Utils.lerp(1, 0, distance / 700);
+      SoundManager.playSound("explode_small", volume);
+    }
   }
 
   getElement(): SVGElement {

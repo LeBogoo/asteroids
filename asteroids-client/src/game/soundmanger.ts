@@ -17,7 +17,9 @@ export class SoundManager {
     });
   }
 
-  static playSound(name: string): void {
+  static playSound(name: string, volume: number = 1): void {
+    if (volume <= 0) return;
+
     const audio = this.sounds.get(name);
     if (!audio) {
       console.warn(`Sound ${name} not found.`);
@@ -26,6 +28,7 @@ export class SoundManager {
     // Clone the audio node so the same sound can overlap
     const clone = audio.cloneNode(true) as HTMLAudioElement;
     clone.currentTime = 0;
+    clone.volume = volume;
     clone.play();
   }
 

@@ -56,7 +56,12 @@ export class Asteroid extends GameObject {
     }
 
     this.world?.removeObject(this);
-    SoundManager.playSound("explode_big");
+
+    if (bullet.parent) {
+      const distance = this.position.distanceTo(bullet.parent.position);
+      const volume = Utils.lerp(1, 0, distance / 700);
+      SoundManager.playSound("explode_big", volume);
+    }
   }
 
   getElement(): SVGElement {

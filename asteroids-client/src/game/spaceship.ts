@@ -1,7 +1,6 @@
 import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
 import { Vector } from "./vector";
-import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
 
 const SHOOT_COOLDOWN = 50;
@@ -23,6 +22,7 @@ export class Spaceship extends GameObject {
     pos.x += this.position.x;
     pos.y += this.position.y;
     const bullet = new Bullet(pos, this.rotation);
+    bullet.parent = this;
     bullet.world = this.world;
     this.world?.addObject(bullet);
     SoundManager.playSound("shoot");
@@ -61,6 +61,15 @@ export class Spaceship extends GameObject {
     hull.setAttribute("stroke-width", "1");
 
     element.appendChild(hull);
+
+    if (localStorage.getItem("debug") === "true") {
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("r", "700");
+      circle.setAttribute("stroke", "cyan");
+      circle.setAttribute("fill", "none");
+      circle.setAttribute("stroke-width", "1");
+      element.appendChild(circle);
+    }
 
     return element;
   }

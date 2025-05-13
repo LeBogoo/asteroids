@@ -5,6 +5,7 @@ import * as Utils from "./utils";
 import type { World } from "./world";
 
 export abstract class GameObject implements Moveable, Updateable {
+  parent: GameObject | null = null;
   position: Vector;
   targetVelocity: number;
   velocity: number;
@@ -40,11 +41,11 @@ export abstract class GameObject implements Moveable, Updateable {
     );
 
     if (localStorage.getItem("debug") === "true") {
-      this.element.setAttribute("stroke", "red");
-      this.element.setAttribute("stroke-width", "1");
-      this.element.setAttribute("fill", "none");
       const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       circle.setAttribute("r", `${this.radius}`);
+      circle.setAttribute("stroke", "red");
+      circle.setAttribute("fill", "none");
+      circle.setAttribute("stroke-width", "1");
       this.element.appendChild(circle);
 
       const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
