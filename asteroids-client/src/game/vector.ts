@@ -11,6 +11,14 @@ export class Vector {
     return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
   }
 
+  add(other: Vector): Vector {
+    return new Vector(this.x + other.x, this.y + other.y);
+  }
+
+  subtract(other: Vector): Vector {
+    return new Vector(this.x - other.x, this.y - other.y);
+  }
+
   static zero = () => new Vector(0, 0);
 
   static fromAngle(angle: number, distance: number): Vector {
