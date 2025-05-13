@@ -3,7 +3,6 @@ import type { Face } from "./interfaces/face";
 import type { Vector } from "./vector";
 import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
-import type { Bullet } from "./bullet";
 
 export class Fragment extends GameObject {
   customVelocity: Vector;
@@ -20,9 +19,9 @@ export class Fragment extends GameObject {
     this.deathTime = 5 + Math.random() * 10;
   }
 
-  explode(bullet: Bullet): void {
-    if (bullet.parent) {
-      const distance = this.position.distanceTo(bullet.parent.position);
+  explode(projectile: GameObject): void {
+    if (projectile.parent) {
+      const distance = this.position.distanceTo(projectile.parent.position);
       const volume = Utils.lerp(1, 0, distance / 700);
       SoundManager.playSound("explode_small", volume);
     }

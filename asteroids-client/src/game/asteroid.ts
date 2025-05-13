@@ -1,4 +1,3 @@
-import type { Bullet } from "./bullet";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
 import type { Face } from "./interfaces/face";
@@ -16,7 +15,7 @@ export class Asteroid extends GameObject {
     this.customVelocity = Vector.fromAngle(angle, 5);
   }
 
-  explode(bullet: Bullet): void {
+  explode(projectile: GameObject): void {
     const midPoint = Vector.zero();
 
     // Apply rotation to points
@@ -43,7 +42,7 @@ export class Asteroid extends GameObject {
       // { x: this.position.x + centerX, y: this.position.y + centerY };
       const pos = new Vector(this.position.x + centerX, this.position.y + centerY);
       const fragmentSpeed = Math.random() * 0.5 + 0.5;
-      const fragmentDirection = Vector.fromAngle(bullet.rotation, bullet.velocity * fragmentSpeed * 0.2);
+      const fragmentDirection = Vector.fromAngle(projectile.rotation, projectile.velocity * fragmentSpeed * 0.2);
 
       let fragmentVelocity = new Vector(
         fragmentDirection.x + this.customVelocity.x * EXPLODE_FORCE,
@@ -57,8 +56,8 @@ export class Asteroid extends GameObject {
 
     this.world?.removeObject(this);
 
-    if (bullet.parent) {
-      const distance = this.position.distanceTo(bullet.parent.position);
+    if (projectile.parent) {
+      const distance = this.position.distanceTo(projectile.parent.position);
       const volume = Utils.lerp(1, 0, distance / 700);
       SoundManager.playSound("explode_big", volume);
     }
