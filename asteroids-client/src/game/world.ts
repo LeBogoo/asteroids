@@ -19,8 +19,8 @@ export class World implements Updateable {
     }
   }
 
-  onAdd(gameObject: GameObject) {}
-  onRemove(gameObject: GameObject) {}
+  onAdd(_gameObject: GameObject) {}
+  onRemove(_gameObject: GameObject) {}
 
   update(deltaTime: number): void {
     for (const gameObject of this.gameObjects) {
