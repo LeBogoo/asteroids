@@ -27,7 +27,6 @@ gameArea.appendChild(worldBorder);
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
 SoundManager.loadSound("explode_small", "explode_small.wav");
-SoundManager.loadSound("thrust", "thrust.wav");
 
 function resizeGameArea() {
   gameArea.setAttribute("width", `${window.innerWidth}`);
