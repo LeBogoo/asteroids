@@ -1,6 +1,6 @@
 import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
-import type { Vector } from "./interfaces/vector";
+import { Vector } from "./vector";
 import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
 
@@ -19,7 +19,7 @@ export class Spaceship extends GameObject {
       return;
     }
     this.lastShot = Date.now();
-    const pos = Utils.getVectorFromAngle(this.rotation, this.radius);
+    const pos = Vector.fromAngle(this.rotation, this.radius);
     pos.x += this.position.x;
     pos.y += this.position.y;
     const bullet = new Bullet(pos, this.rotation);
@@ -49,10 +49,10 @@ export class Spaceship extends GameObject {
     let element = super.getElement();
     const hull = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
     const hullPoints = [
-      Utils.getVectorFromAngle(0, this.radius),
-      Utils.getVectorFromAngle(140, this.radius),
-      Utils.getVectorFromAngle(180, this.radius * 0.5),
-      Utils.getVectorFromAngle(-140, this.radius),
+      Vector.fromAngle(0, this.radius),
+      Vector.fromAngle(140, this.radius),
+      Vector.fromAngle(180, this.radius * 0.5),
+      Vector.fromAngle(-140, this.radius),
     ];
     const points = hullPoints.map((point) => `${point.x},${point.y}`).join(" ");
     hull.setAttribute("points", points);

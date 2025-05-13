@@ -1,13 +1,12 @@
 import { Spaceship } from "./game/spaceship";
-import type { Vector } from "./game/interfaces/vector";
+import { Vector } from "./game/vector";
 import "./style.css";
 import type { GameObject } from "./game/gameobject";
 import { Asteroid } from "./game/asteroid";
 import { World } from "./game/world";
-import * as Utils from "./game/utils";
 import { SoundManager } from "./game/soundmanger";
 
-let offset: Vector = { x: 0, y: 0 };
+let offset: Vector = Vector.zero();
 
 let gameObjects: GameObject[] = [];
 
@@ -45,7 +44,7 @@ world.onRemove = (gameObject: GameObject) => {
   gameArea.removeChild(gameObject.getElement());
 };
 
-let spaceship: Spaceship = new Spaceship({ x: 0, y: 0 }, 0);
+let spaceship: Spaceship = new Spaceship(Vector.zero(), 0);
 world.addObject(spaceship);
 
 window.addEventListener("keydown", (event) => {
@@ -77,7 +76,7 @@ for (let i = 0; i < 100; i++) {
   const distance = Math.random() * (5000 - radius) + radius;
   const x = Math.cos(angle) * distance;
   const y = Math.sin(angle) * distance;
-  const asteroid = new Asteroid({ x, y }, angle, radius);
+  const asteroid = new Asteroid(new Vector(x, y), angle, radius);
   world.addObject(asteroid);
 }
 
@@ -94,10 +93,10 @@ function updateFavicon() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const hullPoints = [
-    Utils.getVectorFromAngle(spaceship.rotation + 0, 64),
-    Utils.getVectorFromAngle(spaceship.rotation + 140, 64),
-    Utils.getVectorFromAngle(spaceship.rotation + 180, 32),
-    Utils.getVectorFromAngle(spaceship.rotation + -140, 64),
+    Vector.fromAngle(spaceship.rotation + 0, 64),
+    Vector.fromAngle(spaceship.rotation + 140, 64),
+    Vector.fromAngle(spaceship.rotation + 180, 32),
+    Vector.fromAngle(spaceship.rotation + -140, 64),
   ];
 
   ctx.beginPath();

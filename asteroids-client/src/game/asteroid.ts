@@ -2,7 +2,7 @@ import type { Bullet } from "./bullet";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
 import type { Face } from "./interfaces/face";
-import type { Vector } from "./interfaces/vector";
+import { Vector } from "./vector";
 import { SoundManager } from "./soundmanger";
 import * as Utils from "./utils";
 
@@ -13,20 +13,17 @@ export class Asteroid extends GameObject {
   points: Vector[] = [];
   constructor(pos: Vector, angle: number, radius: number) {
     super(pos, angle, radius);
-    this.customVelocity = Utils.getVectorFromAngle(angle, 5);
+    this.customVelocity = Vector.fromAngle(angle, 5);
   }
 
   explode(bullet: Bullet): void {
-    const midPoint = { x: 0, y: 0 };
+    const midPoint = Vector.zero();
 
     // Apply rotation to points
     const rotatedPoints = this.points.map((point) => {
       const cos = Math.cos(this.rotation * (Math.PI / 180));
       const sin = Math.sin(this.rotation * (Math.PI / 180));
-      return {
-        x: point.x * cos - point.y * sin,
-        y: point.x * sin + point.y * cos,
-      };
+      return new Vector(point.x * cos - point.y * sin, point.x * sin + point.y * cos);
     });
 
     for (let i = 0; i < rotatedPoints.length; i++) {
@@ -43,14 +40,15 @@ export class Asteroid extends GameObject {
         y: p.y - centerY,
       })) as Face;
 
-      const pos = { x: this.position.x + centerX, y: this.position.y + centerY };
+      // { x: this.position.x + centerX, y: this.position.y + centerY };
+      const pos = new Vector(this.position.x + centerX, this.position.y + centerY);
       const fragmentSpeed = Math.random() * 0.5 + 0.5;
-      const fragmentDirection = Utils.getVectorFromAngle(bullet.rotation, bullet.velocity * fragmentSpeed * 0.2);
+      const fragmentDirection = Vector.fromAngle(bullet.rotation, bullet.velocity * fragmentSpeed * 0.2);
 
-      let fragmentVelocity = {
-        x: fragmentDirection.x + centerX * EXPLODE_FORCE,
-        y: fragmentDirection.y + centerY * EXPLODE_FORCE,
-      };
+      let fragmentVelocity = new Vector(
+        fragmentDirection.x + this.customVelocity.x * EXPLODE_FORCE,
+        fragmentDirection.y + this.customVelocity.y * EXPLODE_FORCE
+      );
 
       let fragment = new Fragment(pos, this.radius / 2, face, fragmentVelocity);
 
@@ -97,7 +95,7 @@ export class Asteroid extends GameObject {
       const distance = this.radius * (0.7 + Math.random() * 0.6);
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
-      points.push({ x, y });
+      points.push(new Vector(x, y));
     }
     return points;
   }

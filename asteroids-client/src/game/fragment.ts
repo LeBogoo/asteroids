@@ -1,6 +1,6 @@
 import { GameObject } from "./gameobject";
 import type { Face } from "./interfaces/face";
-import type { Vector } from "./interfaces/vector";
+import type { Vector } from "./vector";
 import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
 import type { Bullet } from "./bullet";

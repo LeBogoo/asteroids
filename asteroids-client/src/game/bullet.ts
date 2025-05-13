@@ -1,8 +1,7 @@
 import { Asteroid } from "./asteroid";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
-import type { Vector } from "./interfaces/vector";
-import * as Utils from "./utils";
+import { Vector } from "./vector";
 
 const BULLET_SPEED = 500;
 const MAX_BULLET_LIFETIME = 1000 * 2;
@@ -49,10 +48,10 @@ export class Bullet extends GameObject {
     let element = super.getElement();
     const hull = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
     const hullPoints = [
-      Utils.getVectorFromAngle(0, this.radius * 1.5),
-      Utils.getVectorFromAngle(90, this.radius * 0.5),
-      Utils.getVectorFromAngle(180, this.radius),
-      Utils.getVectorFromAngle(270, this.radius * 0.5),
+      Vector.fromAngle(0, this.radius * 1.5),
+      Vector.fromAngle(90, this.radius * 0.5),
+      Vector.fromAngle(180, this.radius),
+      Vector.fromAngle(270, this.radius * 0.5),
     ];
     const points = hullPoints.map((point) => `${point.x},${point.y}`).join(" ");
     hull.setAttribute("points", points);

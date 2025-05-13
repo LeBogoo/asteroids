@@ -1,6 +1,6 @@
 import type { Moveable } from "./interfaces/moveable";
 import type { Updateable } from "./interfaces/updateable";
-import type { Vector } from "./interfaces/vector";
+import type { Vector } from "./vector";
 import * as Utils from "./utils";
 import type { World } from "./world";
 
