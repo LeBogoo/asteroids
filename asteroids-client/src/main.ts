@@ -5,6 +5,7 @@ import type { GameObject } from "./game/gameobject";
 import { Asteroid } from "./game/asteroid";
 import { World } from "./game/world";
 import * as Utils from "./game/utils";
+import { SoundManager } from "./game/soundmanger";
 
 let offset: Vector = { x: 0, y: 0 };
 
@@ -22,6 +23,11 @@ worldBorder.setAttribute("fill", "none");
 worldBorder.setAttribute("stroke", "red");
 worldBorder.setAttribute("stroke-width", "2");
 gameArea.appendChild(worldBorder);
+
+SoundManager.loadSound("shoot", "shoot.wav");
+SoundManager.loadSound("explode_big", "explode_big.wav");
+SoundManager.loadSound("explode_small", "explode_small.wav");
+SoundManager.loadSound("thrust", "thrust.wav");
 
 function resizeGameArea() {
   gameArea.setAttribute("width", `${window.innerWidth}`);
@@ -47,6 +53,9 @@ let keysPressed: Record<string, boolean> = {};
 
 window.addEventListener("keydown", (event) => {
   keysPressed[event.key] = true;
+  if (event.key === " ") {
+    spaceship.shoot();
+  }
 });
 
 window.addEventListener("keyup", (event) => {
@@ -80,10 +89,6 @@ function handleInput() {
     spaceship.targetVelocity = -300;
   } else {
     spaceship.targetVelocity = 0;
-  }
-
-  if (keysPressed[" "]) {
-    spaceship.shoot();
   }
 }
 

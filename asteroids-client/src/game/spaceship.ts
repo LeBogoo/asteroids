@@ -2,11 +2,13 @@ import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
 import type { Vector } from "./interfaces/vector";
 import * as Utils from "./utils";
+import { SoundManager } from "./soundmanger";
 
-const SHOOT_COOLDOWN = 250;
+const SHOOT_COOLDOWN = 50;
 
 export class Spaceship extends GameObject {
   lastShot: number = 0;
+  private isThrusting: boolean = false;
 
   constructor(pos: Vector, angle: number) {
     super(pos, angle, 15);
@@ -23,6 +25,20 @@ export class Spaceship extends GameObject {
     const bullet = new Bullet(pos, this.rotation);
     bullet.world = this.world;
     this.world?.addObject(bullet);
+    SoundManager.playSound("shoot");
+  }
+
+  update(deltaTime: number): void {
+    super.update(deltaTime);
+    if (this.targetVelocity != 0 && !this.isThrusting) {
+      SoundManager.playFilteredNoise();
+      this.isThrusting = true;
+    }
+
+    if (this.targetVelocity == 0 && this.isThrusting) {
+      SoundManager.stopNoise();
+      this.isThrusting = false;
+    }
   }
 
   getElement(): SVGElement {

@@ -3,6 +3,7 @@ import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
 import type { Face } from "./interfaces/face";
 import type { Vector } from "./interfaces/vector";
+import { SoundManager } from "./soundmanger";
 import * as Utils from "./utils";
 
 const EXPLODE_FORCE = 1;
@@ -55,7 +56,9 @@ export class Asteroid extends GameObject {
 
       this.world?.addObject(fragment);
     }
+
     this.world?.removeObject(this);
+    SoundManager.playSound("explode_big");
   }
 
   getElement(): SVGElement {

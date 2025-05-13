@@ -32,6 +32,7 @@ export class Bullet extends GameObject {
 
         if (gameObject instanceof Fragment) {
           this.world?.removeObject(gameObject);
+          gameObject.explode(this);
         }
 
         this.world?.removeObject(this);

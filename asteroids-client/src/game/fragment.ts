@@ -2,6 +2,8 @@ import { GameObject } from "./gameobject";
 import type { Face } from "./interfaces/face";
 import type { Vector } from "./interfaces/vector";
 import * as Utils from "./utils";
+import { SoundManager } from "./soundmanger";
+import type { Bullet } from "./bullet";
 
 export class Fragment extends GameObject {
   customVelocity: Vector;
@@ -16,6 +18,10 @@ export class Fragment extends GameObject {
     this.targetAngularVelocity = 20;
 
     this.deathTime = 5 + Math.random() * 10;
+  }
+
+  explode(_bullet: Bullet): void {
+    SoundManager.playSound("explode_small");
   }
 
   getElement(): SVGElement {
