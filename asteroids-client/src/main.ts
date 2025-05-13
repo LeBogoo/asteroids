@@ -49,17 +49,25 @@ world.onRemove = (gameObject: GameObject) => {
 let spaceship: Spaceship = new Spaceship({ x: 0, y: 0 }, 0);
 world.addObject(spaceship);
 
-let keysPressed: Record<string, boolean> = {};
-
 window.addEventListener("keydown", (event) => {
-  keysPressed[event.key] = true;
-  if (event.key === " ") {
-    spaceship.shoot();
-  }
+  if (event.repeat) return;
+
+  const key = event.key.toLowerCase();
+
+  if (key == " ") spaceship.shoot();
+  if (key == "w") spaceship.targetVelocity = 300;
+  if (key == "s") spaceship.targetVelocity = -300;
+  if (key == "a") spaceship.targetAngularVelocity = -200;
+  if (key == "d") spaceship.targetAngularVelocity = 200;
 });
 
 window.addEventListener("keyup", (event) => {
-  keysPressed[event.key.toLowerCase()] = false;
+  const key = event.key.toLowerCase();
+
+  if (key == "w") spaceship.targetVelocity = 0;
+  if (key == "s") spaceship.targetVelocity = 0;
+  if (key == "a") spaceship.targetAngularVelocity = 0;
+  if (key == "d") spaceship.targetAngularVelocity = 0;
 });
 
 gameObjects.push(spaceship);
@@ -72,24 +80,6 @@ for (let i = 0; i < 100; i++) {
   const y = Math.sin(angle) * distance;
   const asteroid = new Asteroid({ x, y }, angle, radius);
   world.addObject(asteroid);
-}
-
-function handleInput() {
-  if (keysPressed["a"]) {
-    spaceship.targetAngularVelocity = -200;
-  } else if (keysPressed["d"]) {
-    spaceship.targetAngularVelocity = 200;
-  } else {
-    spaceship.targetAngularVelocity = 0;
-  }
-
-  if (keysPressed["w"]) {
-    spaceship.targetVelocity = 300;
-  } else if (keysPressed["s"]) {
-    spaceship.targetVelocity = -300;
-  } else {
-    spaceship.targetVelocity = 0;
-  }
 }
 
 const favicon = document.createElement("link");
@@ -130,8 +120,6 @@ function update() {
   const now = performance.now();
   const deltaTime = (now - lastUpdate) / 1000;
   lastUpdate = now;
-
-  handleInput();
 
   world.update(deltaTime);
 
