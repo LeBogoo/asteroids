@@ -21,7 +21,7 @@ export class Spaceship extends GameObject {
     return this._isPlayer;
   }
 
-  health: number = 10;
+  health: number = 20;
 
   constructor(isPlayer: boolean, pos: Vector, angle: number) {
     super(pos, angle, 15);
@@ -29,6 +29,10 @@ export class Spaceship extends GameObject {
   }
 
   shoot(): void {
+    if (this.isDestroyed || !this.world) {
+      return;
+    }
+
     if (Date.now() - this.lastShot < SHOOT_COOLDOWN) {
       return;
     }

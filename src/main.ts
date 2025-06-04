@@ -6,6 +6,7 @@ import { World } from "./game/world";
 import { SoundManager } from "./game/soundmanger";
 import { AsteroidManager } from "./game/asteroid-manager";
 import { DebugPanel } from "./debug-panel";
+import { GUI } from "./game/gui";
 
 let offset: Vector = Vector.zero();
 
@@ -15,6 +16,13 @@ const gameArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 gameArea.setAttribute("style", "border: 1px solid white; display: block;");
 document.body.appendChild(gameArea);
 
+const guiContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+guiContainer.setAttribute(
+  "style",
+  "position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
+);
+document.body.appendChild(guiContainer);
+
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
 SoundManager.loadSound("explode_small", "explode_small.wav");
@@ -22,6 +30,11 @@ SoundManager.loadSound("explode_small", "explode_small.wav");
 function resizeGameArea() {
   gameArea.setAttribute("width", `${window.innerWidth}`);
   gameArea.setAttribute("height", `${window.innerHeight}`);
+
+  guiContainer.setAttribute("width", `${window.innerWidth}`);
+  guiContainer.setAttribute("height", `${window.innerHeight}`);
+  guiContainer.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+  guiContainer.setAttribute("preserveAspectRatio", "none");
 }
 
 window.addEventListener("resize", resizeGameArea);
@@ -38,8 +51,10 @@ world.onRemove = (gameObject: GameObject) => {
   gameArea.removeChild(gameObject.getElement());
 };
 
-let spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
+const spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
 world.addObject(spaceship);
+
+const gui = new GUI(guiContainer, world);
 
 let debugPanel: DebugPanel | undefined;
 if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
@@ -112,6 +127,7 @@ function update() {
   asteroidManager.update(deltaTime);
 
   debugPanel?.update(deltaTime);
+  gui.update(deltaTime);
 
   offset.x = spaceship.position.x - window.innerWidth / 2;
   offset.y = spaceship.position.y - window.innerHeight / 2;
