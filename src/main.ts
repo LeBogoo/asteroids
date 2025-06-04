@@ -2,9 +2,9 @@ import { Spaceship } from "./game/spaceship";
 import { Vector } from "./game/vector";
 import "./style.css";
 import type { GameObject } from "./game/gameobject";
-import { Asteroid } from "./game/asteroid";
 import { World } from "./game/world";
 import { SoundManager } from "./game/soundmanger";
+import { AsteroidManager } from "./game/asteroid-manager";
 
 let offset: Vector = Vector.zero();
 
@@ -46,6 +46,7 @@ world.onRemove = (gameObject: GameObject) => {
 
 let spaceship: Spaceship = new Spaceship(Vector.zero(), 0);
 world.addObject(spaceship);
+const asteroidManager = new AsteroidManager(world, spaceship);
 
 window.addEventListener("keydown", (event) => {
   if (event.repeat) return;
@@ -69,16 +70,6 @@ window.addEventListener("keyup", (event) => {
 });
 
 gameObjects.push(spaceship);
-
-for (let i = 0; i < 100; i++) {
-  const radius = Math.random() * 20 + 10;
-  const angle = Math.random() * 360;
-  const distance = Math.random() * (5000 - radius) + radius;
-  const x = Math.cos(angle) * distance;
-  const y = Math.sin(angle) * distance;
-  const asteroid = new Asteroid(new Vector(x, y), angle, radius);
-  world.addObject(asteroid);
-}
 
 const favicon = document.createElement("link");
 favicon.rel = "icon";
@@ -120,6 +111,7 @@ function update() {
   lastUpdate = now;
 
   world.update(deltaTime);
+  asteroidManager.update(deltaTime);
 
   offset.x = spaceship.position.x - window.innerWidth / 2;
   offset.y = spaceship.position.y - window.innerHeight / 2;

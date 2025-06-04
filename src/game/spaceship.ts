@@ -103,12 +103,19 @@ export class Spaceship extends GameObject {
     element.appendChild(hull);
 
     if (localStorage.getItem("debug") === "true") {
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("r", "700");
-      circle.setAttribute("stroke", "cyan");
-      circle.setAttribute("fill", "none");
-      circle.setAttribute("stroke-width", "1");
-      element.appendChild(circle);
+      const soundBarrier = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      soundBarrier.setAttribute("r", "700");
+      soundBarrier.setAttribute("stroke", "cyan");
+      soundBarrier.setAttribute("fill", "none");
+      soundBarrier.setAttribute("stroke-width", "1");
+      element.appendChild(soundBarrier);
+
+      const spawnDistance = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      spawnDistance.setAttribute("r", "1500");
+      spawnDistance.setAttribute("stroke", "cyan");
+      spawnDistance.setAttribute("fill", "none");
+      spawnDistance.setAttribute("stroke-width", "1");
+      element.appendChild(spawnDistance);
     }
 
     return element;
