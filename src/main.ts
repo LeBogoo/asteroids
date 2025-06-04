@@ -5,6 +5,7 @@ import type { GameObject } from "./game/gameobject";
 import { World } from "./game/world";
 import { SoundManager } from "./game/soundmanger";
 import { AsteroidManager } from "./game/asteroid-manager";
+import { DebugPanel } from "./debug-panel";
 
 let offset: Vector = Vector.zero();
 
@@ -13,15 +14,6 @@ let gameObjects: GameObject[] = [];
 const gameArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 gameArea.setAttribute("style", "border: 1px solid white; display: block;");
 document.body.appendChild(gameArea);
-
-const worldBorder = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-worldBorder.setAttribute("cx", "0");
-worldBorder.setAttribute("cy", "0");
-worldBorder.setAttribute("r", "5000");
-worldBorder.setAttribute("fill", "none");
-worldBorder.setAttribute("stroke", "red");
-worldBorder.setAttribute("stroke-width", "2");
-gameArea.appendChild(worldBorder);
 
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
@@ -46,6 +38,10 @@ world.onRemove = (gameObject: GameObject) => {
 
 let spaceship: Spaceship = new Spaceship(Vector.zero(), 0);
 world.addObject(spaceship);
+
+let debugPanel: DebugPanel | undefined;
+if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
+
 const asteroidManager = new AsteroidManager(world, spaceship);
 
 window.addEventListener("keydown", (event) => {
@@ -112,6 +108,8 @@ function update() {
 
   world.update(deltaTime);
   asteroidManager.update(deltaTime);
+
+  debugPanel?.update(deltaTime);
 
   offset.x = spaceship.position.x - window.innerWidth / 2;
   offset.y = spaceship.position.y - window.innerHeight / 2;
