@@ -52,19 +52,19 @@ window.addEventListener("keydown", (event) => {
   const key = event.key.toLowerCase();
 
   if (key == " ") spaceship.shoot();
-  if (key == "w") spaceship.targetVelocity = 300;
-  if (key == "s") spaceship.targetVelocity = -300;
-  if (key == "a") spaceship.targetAngularVelocity = -200;
-  if (key == "d") spaceship.targetAngularVelocity = 200;
+  if (key == "w") spaceship.forward = 1;
+  if (key == "s") spaceship.forward = -1;
+  if (key == "a") spaceship.turn = -1;
+  if (key == "d") spaceship.turn = 1;
 });
 
 window.addEventListener("keyup", (event) => {
   const key = event.key.toLowerCase();
 
-  if (key == "w") spaceship.targetVelocity = 0;
-  if (key == "s") spaceship.targetVelocity = 0;
-  if (key == "a") spaceship.targetAngularVelocity = 0;
-  if (key == "d") spaceship.targetAngularVelocity = 0;
+  if (key == "w") spaceship.forward = 0;
+  if (key == "s") spaceship.forward = 0;
+  if (key == "a") spaceship.turn = 0;
+  if (key == "d") spaceship.turn = 0;
 });
 
 gameObjects.push(spaceship);

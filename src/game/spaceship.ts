@@ -12,12 +12,16 @@ export class Spaceship extends GameObject {
   private isThrusting: boolean = false;
   private flame!: SVGElement;
   private _isPlayer: boolean;
+  private isDestroyed: boolean = false;
+
+  forward = 0;
+  turn = 0;
 
   get isPlayer(): boolean {
     return this._isPlayer;
   }
 
-  health: number = 100;
+  health: number = 10;
 
   constructor(isPlayer: boolean, pos: Vector, angle: number) {
     super(pos, angle, 15);
@@ -39,21 +43,54 @@ export class Spaceship extends GameObject {
     SoundManager.playSound("shoot", 0.25);
   }
 
+  reset(): void {
+    this.health = 100;
+    this.isDestroyed = false;
+  }
+
+  destroy(reason: GameObject): void {
+    if (this.isDestroyed) return;
+    this.isDestroyed = true;
+
+    this.stopThrusting();
+    this.turn = 0;
+    this.forward = 0;
+    this.targetVelocity = 0;
+    this.targetAngularVelocity = 0;
+  }
+
+  startThrusting(): void {
+    if (this.isThrusting || this.isDestroyed) return;
+    SoundManager.playFilteredNoise();
+    this.isThrusting = true;
+  }
+  private stopThrusting(): void {
+    if (!this.isThrusting) return;
+    SoundManager.stopNoise();
+    this.isThrusting = false;
+  }
+
   update(deltaTime: number): void {
     super.update(deltaTime);
+
+    if (this.isDestroyed) {
+      return;
+    }
+
+    this.targetVelocity = this.forward * 300;
+    this.targetAngularVelocity = this.turn * 200;
+
     if (this.targetVelocity != 0 && !this.isThrusting) {
-      SoundManager.playFilteredNoise();
-      this.isThrusting = true;
+      this.startThrusting();
     }
 
     if (this.targetVelocity == 0 && this.isThrusting) {
-      SoundManager.stopNoise();
-      this.isThrusting = false;
+      this.stopThrusting();
     }
   }
 
   shouldTakeDamage(collision: GameObject): boolean {
-    if (collision.parent == this) return false;
+    if (this.isDestroyed || collision.parent == this) return false;
 
     return collision instanceof Asteroid || collision instanceof Fragment || collision instanceof Bullet;
   }
