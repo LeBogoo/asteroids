@@ -1,0 +1,44 @@
+name: Build and Push Docker image on Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract tag name
+        id: vars
+        run: |
+          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${REPO_OWNER}/asteroids:${TAG} .
+
+      - name: Tag as latest
+        run: |
+          docker tag ghcr.io/${REPO_OWNER}/asteroids:${TAG} ghcr.io/${REPO_OWNER}/asteroids:latest
+
+      - name: Push Docker image
+        run: |
+          docker push ghcr.io/${REPO_OWNER}/asteroids:${TAG}
+          docker push ghcr.io/${REPO_OWNER}/asteroids:latest
