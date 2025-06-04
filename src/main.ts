@@ -28,6 +28,8 @@ window.addEventListener("resize", resizeGameArea);
 resizeGameArea();
 
 const world = new World();
+SoundManager.world = world;
+
 world.onAdd = (gameObject: GameObject) => {
   gameArea.appendChild(gameObject.getElement());
 };

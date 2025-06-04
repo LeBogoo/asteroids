@@ -1,3 +1,8 @@
+import { Spaceship } from "./spaceship";
+import type { Vector } from "./vector";
+import type { World } from "./world";
+import * as Utils from "./utils";
+
 export class SoundManager {
   private static sounds: Map<string, HTMLAudioElement> = new Map();
   private static audioCtx: AudioContext;
@@ -8,6 +13,8 @@ export class SoundManager {
   private static fadeDuration: number = 0.1;
   private static isPlaying: boolean = false;
 
+  public static world: World | undefined;
+
   static loadSound(name: string, url: string): void {
     const audio = new Audio(url);
     audio.load();
@@ -15,6 +22,24 @@ export class SoundManager {
     audio.addEventListener("canplaythrough", () => {
       console.log(`Sound ${name} (${url}) loaded successfully.`);
     });
+  }
+
+  static playSoundAt(name: string, position: Vector): void {
+    if (!this.world) {
+      console.warn("World is not defined. Cannot play sound at position.");
+      return;
+    }
+
+    const player = this.world.getObjects().find((obj) => obj instanceof Spaceship && obj.isPlayer);
+    if (!player) {
+      console.warn("Player spaceship not found in the world.");
+      return;
+    }
+
+    const distance = position.distanceTo(player.position);
+    const volume = Utils.lerp(1, 0, distance / 700);
+
+    this.playSound(name, volume);
   }
 
   static playSound(name: string, volume: number = 1): void {
