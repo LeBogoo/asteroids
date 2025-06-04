@@ -12,6 +12,10 @@ export class Fragment extends GameObject {
   deathTime: number;
   health: number = 1;
 
+  private get endOfLife(): boolean {
+    return this.lifeTime + 3 > this.deathTime;
+  }
+
   constructor(pos: Vector, radius: number, face: Face, velocity: Vector) {
     super(pos, 0, radius);
     this.face = face;
@@ -48,6 +52,17 @@ export class Fragment extends GameObject {
     element.appendChild(fragment);
 
     return element;
+  }
+
+  updateElement(): void {
+    super.updateElement();
+    if (!this.element) return;
+    if (this.endOfLife) {
+      const deathProgress = (this.lifeTime - this.deathTime + 3) / 2;
+      const blinkMultiplier = 2 + 0.5 * deathProgress;
+      const opacity = Math.abs(Math.sin((this.lifeTime * blinkMultiplier * Math.PI) / 1)) > 0.5 ? 1 : 0;
+      this.element.setAttribute("opacity", opacity.toString());
+    }
   }
 
   update(deltaTime: number): void {
