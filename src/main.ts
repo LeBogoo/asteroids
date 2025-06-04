@@ -36,7 +36,7 @@ world.onRemove = (gameObject: GameObject) => {
   gameArea.removeChild(gameObject.getElement());
 };
 
-let spaceship: Spaceship = new Spaceship(Vector.zero(), 0);
+let spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
 world.addObject(spaceship);
 
 let debugPanel: DebugPanel | undefined;

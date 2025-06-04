@@ -9,9 +9,17 @@ export class Spaceship extends GameObject {
   lastShot: number = 0;
   private isThrusting: boolean = false;
   private flame!: SVGElement;
+  private _isPlayer: boolean;
 
-  constructor(pos: Vector, angle: number) {
+  get isPlayer(): boolean {
+    return this._isPlayer;
+  }
+
+  health: number = 100;
+
+  constructor(isPlayer: boolean, pos: Vector, angle: number) {
     super(pos, angle, 15);
+    this._isPlayer = isPlayer;
   }
 
   shoot(): void {
