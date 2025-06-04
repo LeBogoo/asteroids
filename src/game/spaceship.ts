@@ -26,7 +26,7 @@ export class Spaceship extends GameObject {
     bullet.parent = this;
     bullet.world = this.world;
     this.world?.addObject(bullet);
-    SoundManager.playSound("shoot");
+    SoundManager.playSound("shoot", 0.25);
   }
 
   update(deltaTime: number): void {

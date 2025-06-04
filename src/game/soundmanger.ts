@@ -61,7 +61,7 @@ export class SoundManager {
     // Start from 0 and fade in to 1
     this.gainNode.gain.cancelScheduledValues(now);
     this.gainNode.gain.setValueAtTime(0, now);
-    this.gainNode.gain.linearRampToValueAtTime(0.5, now + this.fadeDuration);
+    this.gainNode.gain.linearRampToValueAtTime(0.1, now + this.fadeDuration);
 
     this.noise.connect(this.filter);
     this.filter.connect(this.gainNode);
@@ -78,7 +78,7 @@ export class SoundManager {
 
     // Estimate current gain value based on elapsed ramp time
     const elapsed = now - this.fadeStartTime;
-    const gainAtNow = Math.min(elapsed / this.fadeDuration, 0.5); // linear fade-in assumption
+    const gainAtNow = Math.min(elapsed / this.fadeDuration, 0.1); // linear fade-in assumption
 
     // Cancel existing ramp and start new fade-out from estimated gain
     this.gainNode.gain.cancelScheduledValues(now);
