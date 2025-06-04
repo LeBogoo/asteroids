@@ -4,18 +4,22 @@ import type { Face } from "./interfaces/face";
 import { Vector } from "./vector";
 import { SoundManager } from "./soundmanger";
 import * as Utils from "./utils";
+import { Bullet } from "./bullet";
+import { Spaceship } from "./spaceship";
 
 const EXPLODE_FORCE = 1;
 
 export class Asteroid extends GameObject {
   customVelocity: Vector;
   points: Vector[] = [];
+  health: number = 1;
+
   constructor(pos: Vector, angle: number, radius: number) {
     super(pos, angle, radius);
     this.customVelocity = Vector.fromAngle(angle, 5);
   }
 
-  explode(projectile: GameObject): void {
+  destroy(projectile: GameObject): void {
     const midPoint = Vector.zero();
 
     // Apply rotation to points
@@ -54,13 +58,12 @@ export class Asteroid extends GameObject {
       this.world?.addObject(fragment);
     }
 
-    this.world?.removeObject(this);
+    SoundManager.playSoundAt("explode_big", this.position);
+    super.destroy(projectile);
+  }
 
-    if (projectile.parent) {
-      const distance = this.position.distanceTo(projectile.parent.position);
-      const volume = Utils.lerp(1, 0, distance / 700);
-      SoundManager.playSound("explode_big", volume);
-    }
+  shouldTakeDamage(collision: GameObject): boolean {
+    return collision instanceof Bullet || collision instanceof Spaceship;
   }
 
   getElement(): SVGElement {

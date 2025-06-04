@@ -3,11 +3,14 @@ import type { Face } from "./interfaces/face";
 import type { Vector } from "./vector";
 import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
+import { Bullet } from "./bullet";
+import { Spaceship } from "./spaceship";
 
 export class Fragment extends GameObject {
   customVelocity: Vector;
   face: Face;
   deathTime: number;
+  health: number = 1;
 
   constructor(pos: Vector, radius: number, face: Face, velocity: Vector) {
     super(pos, 0, radius);
@@ -19,12 +22,13 @@ export class Fragment extends GameObject {
     this.deathTime = 5 + Math.random() * 10;
   }
 
-  explode(projectile: GameObject): void {
-    if (projectile.parent) {
-      const distance = this.position.distanceTo(projectile.parent.position);
-      const volume = Utils.lerp(1, 0, distance / 700);
-      SoundManager.playSound("explode_small", volume);
-    }
+  destroy(projectile: GameObject): void {
+    SoundManager.playSoundAt("explode_small", this.position);
+    super.destroy(projectile);
+  }
+
+  shouldTakeDamage(collision: GameObject): boolean {
+    return collision instanceof Bullet || collision instanceof Spaceship;
   }
 
   getElement(): SVGElement {

@@ -1,6 +1,7 @@
 import { Asteroid } from "./asteroid";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
+import { Spaceship } from "./spaceship";
 import { Vector } from "./vector";
 
 const BULLET_SPEED = 500;
@@ -8,6 +9,7 @@ const MAX_BULLET_LIFETIME = 1000 * 2;
 
 export class Bullet extends GameObject {
   spawnTime: number = 0;
+  health: number = 1;
 
   constructor(pos: Vector, angle: number) {
     super(pos, angle, 2);
@@ -26,18 +28,24 @@ export class Bullet extends GameObject {
     for (const gameObject of this.world?.getObjects() || []) {
       if (gameObject !== this && this.isColliding(gameObject)) {
         if (gameObject instanceof Asteroid) {
-          gameObject.explode(this);
+          gameObject.damage(this);
         }
 
         if (gameObject instanceof Fragment) {
           this.world?.removeObject(gameObject);
-          gameObject.explode(this);
+          gameObject.damage(this);
         }
 
         this.world?.removeObject(this);
         break;
       }
     }
+  }
+
+  shouldTakeDamage(collision: GameObject): boolean {
+    if (this.parent == collision) return false;
+
+    return collision instanceof Asteroid || collision instanceof Fragment || collision instanceof Spaceship;
   }
 
   getElement(): SVGElement {

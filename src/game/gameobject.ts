@@ -15,6 +15,8 @@ export abstract class GameObject implements Moveable, Updateable {
   world: World | null = null;
   lifeTime: number = 0;
 
+  abstract health: number;
+
   radius: number = 0;
 
   element!: SVGElement;
@@ -28,6 +30,22 @@ export abstract class GameObject implements Moveable, Updateable {
     this.angularVelocity = 0;
     this.radius = radius;
   }
+
+  damage(collision: GameObject): void {
+    if (!this.shouldTakeDamage(collision)) return;
+
+    this.health--;
+
+    if (this.health <= 0) {
+      this.destroy(collision);
+    }
+  }
+
+  destroy(reason: GameObject): void {
+    this.world?.removeObject(this);
+  }
+
+  abstract shouldTakeDamage(collision: GameObject): boolean;
 
   getElement(): SVGElement {
     if (this.element) {
@@ -75,6 +93,16 @@ export abstract class GameObject implements Moveable, Updateable {
     this.position.x += Math.sin((this.rotation * Math.PI) / 180) * this.velocity * deltaTime;
     this.position.y -= Math.cos((this.rotation * Math.PI) / 180) * this.velocity * deltaTime;
     this.rotation += this.angularVelocity * deltaTime;
+
+    // check collisions with other game objects
+    for (const gameObject of this.world?.getObjects() || []) {
+      if (gameObject !== this && this.isColliding(gameObject)) {
+        gameObject.damage(this);
+        this.damage(gameObject);
+
+        break;
+      }
+    }
   }
 
   isColliding(other: GameObject): boolean {

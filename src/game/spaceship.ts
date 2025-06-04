@@ -2,6 +2,8 @@ import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
 import { Vector } from "./vector";
 import { SoundManager } from "./soundmanger";
+import { Asteroid } from "./asteroid";
+import { Fragment } from "./fragment";
 
 const SHOOT_COOLDOWN = 50;
 
@@ -48,6 +50,12 @@ export class Spaceship extends GameObject {
       SoundManager.stopNoise();
       this.isThrusting = false;
     }
+  }
+
+  shouldTakeDamage(collision: GameObject): boolean {
+    if (collision.parent == this) return false;
+
+    return collision instanceof Asteroid || collision instanceof Fragment || collision instanceof Bullet;
   }
 
   updateElement(): void {
