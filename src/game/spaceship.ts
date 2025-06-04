@@ -52,7 +52,7 @@ export class Spaceship extends GameObject {
     this.isDestroyed = false;
   }
 
-  destroy(reason: GameObject): void {
+  destroy(_reason: GameObject): void {
     if (this.isDestroyed) return;
     this.isDestroyed = true;
 

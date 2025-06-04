@@ -10,7 +10,7 @@ export class GUI implements Updateable {
 
   constructor(guiContainer: SVGSVGElement, world: World) {
     this.world = world;
-    this.spaceship = world.getObjects().find((obj) => obj instanceof Spaceship && obj.isPlayer) as Spaceship;
+    this.spaceship = this.world.getObjects().find((obj) => obj instanceof Spaceship && obj.isPlayer) as Spaceship;
     this.guiContainer = guiContainer;
 
     this.createGui();
@@ -60,7 +60,7 @@ export class GUI implements Updateable {
     this.guiContainer.appendChild(healthContainer);
   }
 
-  update(deltaTime: number): void {
+  update(_deltaTime: number): void {
     const health = this.spaceship.health;
     const healthContainer = this.guiContainer.querySelector<SVGElement>("#health-container");
     if (!healthContainer) return;

@@ -41,7 +41,7 @@ export abstract class GameObject implements Moveable, Updateable {
     }
   }
 
-  destroy(reason: GameObject): void {
+  destroy(_reason: GameObject): void {
     this.world?.removeObject(this);
   }
 
