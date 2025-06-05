@@ -1,7 +1,9 @@
-name: Build and Push Docker image on Tag
+name: Build and Push Docker image on Push
 
 on:
   push:
+    branches:
+      - "**"
     tags:
       - "v*"
 
@@ -17,11 +19,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Extract tag name
+      - name: Set repository owner and check if tag
         id: vars
         run: |
-          echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
           echo "REPO_OWNER=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "IS_TAG=true" >> $GITHUB_ENV
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          else
+            echo "IS_TAG=false" >> $GITHUB_ENV
+          fi
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -32,13 +39,16 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ghcr.io/${REPO_OWNER}/asteroids:${TAG} .
+          docker build -t ghcr.io/${REPO_OWNER}/asteroids:development .
 
-      - name: Tag as latest
+      - name: Push development image
         run: |
-          docker tag ghcr.io/${REPO_OWNER}/asteroids:${TAG} ghcr.io/${REPO_OWNER}/asteroids:latest
+          docker push ghcr.io/${REPO_OWNER}/asteroids:development
 
-      - name: Push Docker image
+      - name: Tag and push release images
+        if: env.IS_TAG == 'true'
         run: |
+          docker tag ghcr.io/${REPO_OWNER}/asteroids:development ghcr.io/${REPO_OWNER}/asteroids:${TAG}
+          docker tag ghcr.io/${REPO_OWNER}/asteroids:development ghcr.io/${REPO_OWNER}/asteroids:latest
           docker push ghcr.io/${REPO_OWNER}/asteroids:${TAG}
           docker push ghcr.io/${REPO_OWNER}/asteroids:latest
