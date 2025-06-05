@@ -28,6 +28,11 @@ export class Fragment extends GameObject {
 
   destroy(projectile: GameObject): void {
     SoundManager.playSoundAt("explode_small", this.position);
+    if (projectile.parent && projectile.parent instanceof Spaceship) {
+      projectile.parent.fragmentsDestroyed++;
+      console.log(`Fragments destroyed: ${projectile.parent.fragmentsDestroyed}`);
+    }
+
     super.destroy(projectile);
   }
 

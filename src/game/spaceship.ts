@@ -14,6 +14,8 @@ export class Spaceship extends GameObject {
   private _isPlayer: boolean;
   private isDestroyed: boolean = false;
 
+  fragmentsDestroyed: number = 0;
+
   forward = 0;
   turn = 0;
 
@@ -50,6 +52,7 @@ export class Spaceship extends GameObject {
   reset(): void {
     this.health = 100;
     this.isDestroyed = false;
+    this.fragmentsDestroyed = 0;
   }
 
   destroy(_reason: GameObject): void {

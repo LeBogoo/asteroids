@@ -58,6 +58,18 @@ export class GUI implements Updateable {
     }
 
     this.guiContainer.appendChild(healthContainer);
+
+    // Create fragments destroyed counter in top right corner
+    const fragmentsCounter = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    fragmentsCounter.setAttribute("id", "fragments-counter");
+    fragmentsCounter.setAttribute("x", (window.innerWidth - 10).toString());
+    fragmentsCounter.setAttribute("y", "30");
+    fragmentsCounter.setAttribute("text-anchor", "end");
+    fragmentsCounter.setAttribute("fill", "white");
+    fragmentsCounter.setAttribute("font-family", "monospace");
+    fragmentsCounter.setAttribute("font-size", "20");
+    fragmentsCounter.textContent = "Score: 0";
+    this.guiContainer.appendChild(fragmentsCounter);
   }
 
   update(_deltaTime: number): void {
@@ -72,5 +84,11 @@ export class GUI implements Updateable {
         polygon.setAttribute("fill", "rgb(33, 33, 33)");
       }
     });
+
+    // Update fragments counter
+    const fragmentsCounter = this.guiContainer.querySelector<SVGTextElement>("#fragments-counter");
+    if (fragmentsCounter) {
+      fragmentsCounter.textContent = `Score: ${this.spaceship.fragmentsDestroyed}`;
+    }
   }
 }
