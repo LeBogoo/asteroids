@@ -6,17 +6,23 @@ export class GUI implements Updateable {
   private world: World;
   private spaceship: Spaceship;
 
-  private guiContainer: SVGSVGElement;
+  private guiContainer!: HTMLDivElement;
 
-  constructor(guiContainer: SVGSVGElement, world: World) {
+  constructor(world: World) {
     this.world = world;
     this.spaceship = this.world.getObjects().find((obj) => obj instanceof Spaceship && obj.isPlayer) as Spaceship;
-    this.guiContainer = guiContainer;
 
     this.createGui();
   }
 
   private createGui() {
+    this.guiContainer = document.createElement("div");
+    this.guiContainer.setAttribute(
+      "style",
+      "position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"
+    );
+    document.body.appendChild(this.guiContainer);
+
     // create 20 rectangles next to each other with a bit of space between them
     const healthHeight = 30;
     const singleHealthWidth = 20;
@@ -24,9 +30,22 @@ export class GUI implements Updateable {
     const skew = 20;
     const outlinePadding = 4;
 
-    const healthContainer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const healthContainer = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    healthContainer.setAttribute("width", `${20 * singleHealthWidth + 19 * healthOffset + skew + 2 * outlinePadding}`);
+    healthContainer.setAttribute("height", `${healthHeight + 2 * outlinePadding}`);
+    healthContainer.setAttribute("style", "pointer-events: none;");
+    healthContainer.setAttribute(
+      "viewBox",
+      `${-outlinePadding} ${-outlinePadding} ${
+        20 * singleHealthWidth + 19 * healthOffset + skew + 4 * outlinePadding
+      } ${healthHeight + 2 * outlinePadding}`
+    );
+
     healthContainer.setAttribute("id", "health-container");
-    healthContainer.setAttribute("transform", `translate(10, ${window.innerHeight - healthHeight - 10})`);
+    // healthContainer.setAttribute("transform", `translate(10, ${window.innerHeight - healthHeight - 10})`);
+    healthContainer.style.position = "absolute";
+    healthContainer.style.bottom = "10px";
+    healthContainer.style.left = "10px";
 
     const healthbarOutline = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
     healthbarOutline.setAttribute(
@@ -60,14 +79,15 @@ export class GUI implements Updateable {
     this.guiContainer.appendChild(healthContainer);
 
     // Create fragments destroyed counter in top right corner
-    const fragmentsCounter = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    const fragmentsCounter = document.createElement("span");
     fragmentsCounter.setAttribute("id", "fragments-counter");
-    fragmentsCounter.setAttribute("x", (window.innerWidth - 10).toString());
-    fragmentsCounter.setAttribute("y", "30");
-    fragmentsCounter.setAttribute("text-anchor", "end");
-    fragmentsCounter.setAttribute("fill", "white");
-    fragmentsCounter.setAttribute("font-family", "monospace");
-    fragmentsCounter.setAttribute("font-size", "20");
+    fragmentsCounter.style.position = "absolute";
+    fragmentsCounter.style.top = "10px";
+    fragmentsCounter.style.right = "10px";
+    fragmentsCounter.style.fontFamily = "monospace";
+    fragmentsCounter.style.fontSize = "20px";
+    fragmentsCounter.style.color = "white";
+
     fragmentsCounter.textContent = "Score: 0";
     this.guiContainer.appendChild(fragmentsCounter);
   }
