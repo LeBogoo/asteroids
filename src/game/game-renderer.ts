@@ -3,7 +3,7 @@ import { Spaceship } from "./spaceship";
 import { Vector } from "./vector";
 import type { World } from "./world";
 
-interface GameRendererOptions {
+export interface GameRendererOptions {
   width?: number;
   height?: number;
   zoom?: number;

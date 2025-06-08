@@ -1,34 +1,25 @@
-import { Spaceship } from "./game/spaceship";
-import { Vector } from "./game/vector";
 import "./style.css";
-import { World } from "./game/world";
+import { Vector } from "./game/vector";
 import { SoundManager } from "./game/soundmanger";
-import { AsteroidManager } from "./game/asteroid-manager";
+import { Game } from "./game/game";
 import { DebugPanel } from "./debug-panel";
-import { PlayerController } from "./game/controller/player-controller";
-import { GameRenderer } from "./game/game-renderer";
-import { Random } from "./game/random";
 
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
 SoundManager.loadSound("explode_small", "explode_small.wav");
 
-const world = new World();
-SoundManager.world = world;
+const game = new Game({
+  seed: 12345,
+  renderOptions: { resize: true, zoom: 1 },
+});
 
-const random = new Random();
+const debugPanel = new DebugPanel(game.world, game.spaceship);
+game.onUpdate = (deltaTime: number) => {
+  debugPanel.update(deltaTime);
+};
 
-const spaceship: Spaceship = new Spaceship(random, true, Vector.zero(), 0);
-const worldRenderer = new GameRenderer(world, { focus: spaceship, width: 450, height: 450, zoom: 1 });
-
-world.addObject(spaceship);
-
-const controller = new PlayerController(spaceship);
-
-let debugPanel: DebugPanel | undefined;
-if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
-
-const asteroidManager = new AsteroidManager(random, world, spaceship);
+SoundManager.world = game.world;
+game.start();
 
 const favicon = document.createElement("link");
 favicon.rel = "icon";
@@ -43,10 +34,10 @@ function updateFavicon() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const hullPoints = [
-    Vector.fromAngle(spaceship.rotation + 0, 64),
-    Vector.fromAngle(spaceship.rotation + 140, 64),
-    Vector.fromAngle(spaceship.rotation + 180, 32),
-    Vector.fromAngle(spaceship.rotation + -140, 64),
+    Vector.fromAngle(game.spaceship.rotation + 0, 64),
+    Vector.fromAngle(game.spaceship.rotation + 140, 64),
+    Vector.fromAngle(game.spaceship.rotation + 180, 32),
+    Vector.fromAngle(game.spaceship.rotation + -140, 64),
   ];
 
   ctx.beginPath();
@@ -63,23 +54,4 @@ function updateFavicon() {
   favicon.href = canvas.toDataURL("image/png");
 }
 
-let lastUpdate: number = 0;
-function update() {
-  const now = performance.now();
-  const deltaTime = (now - lastUpdate) / 1000;
-  lastUpdate = now;
-
-  controller.update(deltaTime);
-  world.update(deltaTime);
-  asteroidManager.update(deltaTime);
-
-  debugPanel?.update(deltaTime);
-
-  worldRenderer.render();
-
-  requestAnimationFrame(update);
-}
-
 setInterval(updateFavicon, 1000 / 30);
-
-update();
