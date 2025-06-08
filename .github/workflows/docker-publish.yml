@@ -61,4 +61,4 @@ jobs:
 
       - name: Trigger webhook
         run: |
-          curl -X POST -H "Content-Type: application/json" ${{secrets.WEBHOOK_URL}}
+          curl "${{secrets.WEBHOOK_URL}}"
