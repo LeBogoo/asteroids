@@ -31,6 +31,10 @@ export abstract class GameObject implements Moveable, Updateable {
     this.radius = radius;
   }
 
+  collide(collision: GameObject, _isSelf: boolean): void {
+    this.damage(collision);
+  }
+
   damage(collision: GameObject): void {
     if (!this.shouldTakeDamage(collision)) return;
 
@@ -97,8 +101,8 @@ export abstract class GameObject implements Moveable, Updateable {
     // check collisions with other game objects
     for (const gameObject of this.world?.getObjects() || []) {
       if (gameObject !== this && this.isColliding(gameObject)) {
-        gameObject.damage(this);
-        this.damage(gameObject);
+        gameObject.collide(this, false);
+        this.collide(gameObject, true);
 
         break;
       }
