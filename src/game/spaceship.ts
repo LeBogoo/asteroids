@@ -4,6 +4,7 @@ import { Vector } from "./vector";
 import { SoundManager } from "./soundmanger";
 import { Asteroid } from "./asteroid";
 import { Fragment } from "./fragment";
+import type { Random } from "./random";
 
 const SHOOT_COOLDOWN = 50;
 
@@ -26,8 +27,8 @@ export class Spaceship extends GameObject {
   health: number = 20;
   maxHealth: number = 20;
 
-  constructor(isPlayer: boolean, pos: Vector, angle: number) {
-    super(pos, angle, 15);
+  constructor(random: Random, isPlayer: boolean, pos: Vector, angle: number) {
+    super(random, pos, angle, 15);
     this._isPlayer = isPlayer;
   }
 
@@ -43,7 +44,7 @@ export class Spaceship extends GameObject {
     const pos = Vector.fromAngle(this.rotation, this.radius);
     pos.x += this.position.x;
     pos.y += this.position.y;
-    const bullet = new Bullet(pos, this.rotation);
+    const bullet = new Bullet(this.random, pos, this.rotation);
     bullet.parent = this;
     bullet.world = this.world;
     this.world?.addObject(bullet);

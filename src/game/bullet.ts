@@ -2,6 +2,7 @@ import { Asteroid } from "./asteroid";
 import { DespawnableGameObject } from "./despawnable-game-object";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
+import type { Random } from "./random";
 import { Spaceship } from "./spaceship";
 import { Vector } from "./vector";
 
@@ -14,8 +15,8 @@ export class Bullet extends DespawnableGameObject {
   health: number = 1;
   maxHealth: number = 1;
 
-  constructor(pos: Vector, angle: number) {
-    super(pos, angle, 2);
+  constructor(random: Random, pos: Vector, angle: number) {
+    super(random, pos, angle, 2);
     this.targetVelocity = BULLET_SPEED;
     this.velocity = BULLET_SPEED;
     this.spawnTime = Date.now();

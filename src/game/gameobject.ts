@@ -3,6 +3,7 @@ import type { Updateable } from "./interfaces/updateable";
 import type { Vector } from "./vector";
 import * as Utils from "./utils";
 import type { World } from "./world";
+import type { Random } from "./random";
 
 export abstract class GameObject implements Moveable, Updateable {
   parent: GameObject | null = null;
@@ -14,6 +15,7 @@ export abstract class GameObject implements Moveable, Updateable {
   angularVelocity: number;
   world: World | null = null;
   lifeTime: number = 0;
+  random: Random;
 
   abstract health: number;
   abstract maxHealth: number;
@@ -29,7 +31,8 @@ export abstract class GameObject implements Moveable, Updateable {
 
   element!: SVGElement;
 
-  constructor(pos: Vector, angle: number, radius: number) {
+  constructor(random: Random, pos: Vector, angle: number, radius: number) {
+    this.random = random;
     this.position = pos;
     this.targetVelocity = 0;
     this.velocity = 0;

@@ -8,6 +8,7 @@ import { DebugPanel } from "./debug-panel";
 import { GUI } from "./game/gui";
 import { PlayerController } from "./game/controller/player-controller";
 import { WorldRenderer } from "./game/world-renderer";
+import { Random } from "./game/random";
 
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
@@ -16,7 +17,9 @@ SoundManager.loadSound("explode_small", "explode_small.wav");
 const world = new World();
 SoundManager.world = world;
 
-const spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
+const random = new Random();
+
+const spaceship: Spaceship = new Spaceship(random, true, Vector.zero(), 0);
 const worldRenderer = new WorldRenderer(world, { focus: spaceship, width: 400, height: 400, zoom: 1 });
 
 world.addObject(spaceship);
@@ -27,7 +30,7 @@ const gui = new GUI(world);
 let debugPanel: DebugPanel | undefined;
 if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
 
-const asteroidManager = new AsteroidManager(world, spaceship);
+const asteroidManager = new AsteroidManager(random, world, spaceship);
 
 const favicon = document.createElement("link");
 favicon.rel = "icon";

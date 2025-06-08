@@ -6,6 +6,7 @@ import { SoundManager } from "./soundmanger";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { DespawnableGameObject } from "./despawnable-game-object";
+import { Random } from "./random";
 
 export class Fragment extends DespawnableGameObject {
   customVelocity: Vector;
@@ -14,14 +15,14 @@ export class Fragment extends DespawnableGameObject {
   health: number = 1;
   maxHealth: number = 1;
 
-  constructor(pos: Vector, radius: number, face: Face, velocity: Vector) {
-    super(pos, 0, radius);
+  constructor(random: Random, pos: Vector, radius: number, face: Face, velocity: Vector) {
+    super(random, pos, 0, radius);
     this.face = face;
     this.customVelocity = velocity;
 
     this.targetAngularVelocity = 20;
 
-    this.despawnTime = 5 + Math.random() * 10;
+    this.despawnTime = 5 + this.random.next() * 10;
   }
 
   destroy(projectile: GameObject): void {

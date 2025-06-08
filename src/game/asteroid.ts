@@ -7,6 +7,7 @@ import * as Utils from "./utils";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { HealthItem } from "./health-item";
+import { Random } from "./random";
 
 const EXPLODE_FORCE = 1;
 const HEALTH_SPAWN_CHANCE = 0.1;
@@ -17,8 +18,8 @@ export class Asteroid extends GameObject {
   health: number = 1;
   maxHealth: number = 1;
 
-  constructor(pos: Vector, angle: number, radius: number) {
-    super(pos, angle, radius);
+  constructor(random: Random, pos: Vector, angle: number, radius: number) {
+    super(random, pos, angle, radius);
     this.customVelocity = Vector.fromAngle(angle, 5);
   }
 
@@ -48,7 +49,7 @@ export class Asteroid extends GameObject {
 
       // { x: this.position.x + centerX, y: this.position.y + centerY };
       const pos = new Vector(this.position.x + centerX, this.position.y + centerY);
-      const fragmentSpeed = Math.random() * 0.5 + 0.5;
+      const fragmentSpeed = this.random.next() * 0.5 + 0.5;
       const fragmentDirection = Vector.fromAngle(projectile.rotation, projectile.velocity * fragmentSpeed * 0.2);
 
       let fragmentVelocity = new Vector(
@@ -56,13 +57,13 @@ export class Asteroid extends GameObject {
         fragmentDirection.y + this.customVelocity.y * EXPLODE_FORCE
       );
 
-      let fragment = new Fragment(pos, this.radius / 2, face, fragmentVelocity);
+      let fragment = new Fragment(this.random, pos, this.radius / 2, face, fragmentVelocity);
 
       this.world?.addObject(fragment);
     }
 
-    if (Math.random() <= HEALTH_SPAWN_CHANCE) {
-      this.world?.addObject(new HealthItem(this.position, 0, 20));
+    if (this.random.next() <= HEALTH_SPAWN_CHANCE) {
+      this.world?.addObject(new HealthItem(this.random, this.position, 0, 20));
     }
 
     SoundManager.playSoundAt("explode_big", this.position);
@@ -102,11 +103,11 @@ export class Asteroid extends GameObject {
   }
 
   private generateAsteroidPoints(): Vector[] {
-    const numPoints = Math.floor(Math.random() * 3) * 2 + 6;
+    const numPoints = Math.floor(this.random.next() * 3) * 2 + 6;
     const points: Vector[] = [];
     for (let i = 0; i < numPoints; i++) {
       const angle = (i / numPoints) * Math.PI * 2;
-      const distance = this.radius * (0.7 + Math.random() * 0.6);
+      const distance = this.radius * (0.7 + this.random.next() * 0.6);
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
       points.push(new Vector(x, y));
