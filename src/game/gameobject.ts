@@ -18,6 +18,12 @@ export abstract class GameObject implements Moveable, Updateable {
   abstract health: number;
   abstract maxHealth: number;
 
+  private static lastId: number = 0;
+  id: number = GameObject.lastId++;
+  get name(): string {
+    return this.constructor.name + "_" + this.id;
+  }
+
   radius: number = 0;
   checkCollisions: boolean = true;
 
