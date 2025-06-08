@@ -65,13 +65,15 @@ export class WorldRenderer {
       gameObject.updateElement();
     }
     if (this.options.focus) {
-      this.offset.x = this.options.focus.position.x - this.options.width / 2;
-      this.offset.y = this.options.focus.position.y - this.options.height / 2;
+      this.offset.x = this.options.focus.position.x - this.options.width / this.options.zoom / 2;
+      this.offset.y = this.options.focus.position.y - this.options.height / this.options.zoom / 2;
     }
 
     this.svgElement.setAttribute(
       "viewBox",
-      `${this.offset.x} ${this.offset.y} ${this.options.width} ${this.options.height}`
+      `${this.offset.x} ${this.offset.y} ${this.options.width / this.options.zoom} ${
+        this.options.height / this.options.zoom
+      }`
     );
   }
 }
