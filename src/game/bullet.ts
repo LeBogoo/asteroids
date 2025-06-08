@@ -1,4 +1,5 @@
 import { Asteroid } from "./asteroid";
+import { DespawnableGameObject } from "./despawnable-game-object";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
 import { Spaceship } from "./spaceship";
@@ -7,7 +8,8 @@ import { Vector } from "./vector";
 const BULLET_SPEED = 500;
 const MAX_BULLET_LIFETIME = 1000 * 2;
 
-export class Bullet extends GameObject {
+export class Bullet extends DespawnableGameObject {
+  despawnTime: number = MAX_BULLET_LIFETIME;
   spawnTime: number = 0;
   health: number = 1;
   maxHealth: number = 1;
@@ -17,30 +19,6 @@ export class Bullet extends GameObject {
     this.targetVelocity = BULLET_SPEED;
     this.velocity = BULLET_SPEED;
     this.spawnTime = Date.now();
-  }
-
-  update(deltaTime: number): void {
-    super.update(deltaTime);
-    if (Date.now() - this.spawnTime > MAX_BULLET_LIFETIME) {
-      this.world?.removeObject(this);
-    }
-
-    // Check for collision with other game objects
-    for (const gameObject of this.world?.getObjects() || []) {
-      if (gameObject !== this && this.isColliding(gameObject)) {
-        if (gameObject instanceof Asteroid) {
-          gameObject.damage(this);
-        }
-
-        if (gameObject instanceof Fragment) {
-          this.world?.removeObject(gameObject);
-          gameObject.damage(this);
-        }
-
-        this.world?.removeObject(this);
-        break;
-      }
-    }
   }
 
   shouldTakeDamage(collision: GameObject): boolean {
