@@ -17,7 +17,7 @@ const world = new World();
 SoundManager.world = world;
 
 const spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
-const worldRenderer = new WorldRenderer(world, spaceship, { width: 400, height: 400, zoom: 1 });
+const worldRenderer = new WorldRenderer(world, { focus: spaceship, width: 400, height: 400, zoom: 1 });
 
 world.addObject(spaceship);
 

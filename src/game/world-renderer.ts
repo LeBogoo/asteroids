@@ -1,4 +1,5 @@
 import type { GameObject } from "./gameobject";
+import { Vector } from "./vector";
 import type { World } from "./world";
 
 interface WorldRendererOptions {
@@ -6,6 +7,7 @@ interface WorldRendererOptions {
   height?: number;
   zoom?: number;
   resize?: boolean;
+  focus?: GameObject;
 }
 
 interface KnownWorldRendererOptions extends WorldRendererOptions {
@@ -17,22 +19,21 @@ interface KnownWorldRendererOptions extends WorldRendererOptions {
 export class WorldRenderer {
   private world: World;
   private svgElement: SVGSVGElement;
-  focusObject: GameObject;
   private options: KnownWorldRendererOptions;
+  private offset: Vector = Vector.zero();
 
-  constructor(world: World, focusObject: GameObject, options: WorldRendererOptions) {
+  constructor(world: World, options: WorldRendererOptions) {
     this.world = world;
-    this.focusObject = focusObject;
     this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
     this.svgElement.setAttribute("style", "border: 1px solid white; display: block;");
     document.body.appendChild(this.svgElement);
 
     this.options = {
+      ...options,
       width: options.width || 200,
       height: options.height || 200,
       zoom: options.zoom || 1,
-      resize: options.resize,
     };
 
     if (options.resize) {
@@ -63,9 +64,14 @@ export class WorldRenderer {
     for (let gameObject of this.world.getObjects()) {
       gameObject.updateElement();
     }
+    if (this.options.focus) {
+      this.offset.x = this.options.focus.position.x - this.options.width / 2;
+      this.offset.y = this.options.focus.position.y - this.options.height / 2;
+    }
 
-    let xOffset = this.focusObject.position.x - this.options.width / 2;
-    let yOffset = this.focusObject.position.y - this.options.height / 2;
-    this.svgElement.setAttribute("viewBox", `${xOffset} ${yOffset} ${this.options.width} ${this.options.height}`);
+    this.svgElement.setAttribute(
+      "viewBox",
+      `${this.offset.x} ${this.offset.y} ${this.options.width} ${this.options.height}`
+    );
   }
 }
