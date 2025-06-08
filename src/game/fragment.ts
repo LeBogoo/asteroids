@@ -5,17 +5,14 @@ import * as Utils from "./utils";
 import { SoundManager } from "./soundmanger";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
+import { DespawnableGameObject } from "./despawnable-game-object";
 
-export class Fragment extends GameObject {
+export class Fragment extends DespawnableGameObject {
   customVelocity: Vector;
   face: Face;
-  deathTime: number;
+  despawnTime: number;
   health: number = 1;
   maxHealth: number = 1;
-
-  private get endOfLife(): boolean {
-    return this.lifeTime + 3 > this.deathTime;
-  }
 
   constructor(pos: Vector, radius: number, face: Face, velocity: Vector) {
     super(pos, 0, radius);
@@ -24,7 +21,7 @@ export class Fragment extends GameObject {
 
     this.targetAngularVelocity = 20;
 
-    this.deathTime = 5 + Math.random() * 10;
+    this.despawnTime = 5 + Math.random() * 10;
   }
 
   destroy(projectile: GameObject): void {
@@ -60,26 +57,12 @@ export class Fragment extends GameObject {
     return element;
   }
 
-  updateElement(): void {
-    super.updateElement();
-    if (!this.element) return;
-    if (this.endOfLife) {
-      const deathProgress = (this.lifeTime - this.deathTime + 3) / 2;
-      const blinkMultiplier = 2 + 0.5 * deathProgress;
-      const opacity = Math.abs(Math.sin((this.lifeTime * blinkMultiplier * Math.PI) / 1)) > 0.5 ? 1 : 0;
-      this.element.setAttribute("opacity", opacity.toString());
-    }
-  }
-
   update(deltaTime: number): void {
     this.lifeTime += deltaTime;
     this.angularVelocity = Utils.lerp(this.angularVelocity, this.targetAngularVelocity, 0.05);
     this.position.x += this.customVelocity.x * deltaTime;
     this.position.y += this.customVelocity.y * deltaTime;
     this.rotation += this.angularVelocity * deltaTime;
-
-    if (this.lifeTime > this.deathTime) {
-      this.world?.removeObject(this);
-    }
+    this.removeIfDead();
   }
 }
