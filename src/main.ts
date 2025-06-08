@@ -5,9 +5,8 @@ import { World } from "./game/world";
 import { SoundManager } from "./game/soundmanger";
 import { AsteroidManager } from "./game/asteroid-manager";
 import { DebugPanel } from "./debug-panel";
-import { GUI } from "./game/gui";
 import { PlayerController } from "./game/controller/player-controller";
-import { WorldRenderer } from "./game/world-renderer";
+import { GameRenderer } from "./game/game-renderer";
 import { Random } from "./game/random";
 
 SoundManager.loadSound("shoot", "shoot.wav");
@@ -20,12 +19,11 @@ SoundManager.world = world;
 const random = new Random();
 
 const spaceship: Spaceship = new Spaceship(random, true, Vector.zero(), 0);
-const worldRenderer = new WorldRenderer(world, { focus: spaceship, width: 400, height: 400, zoom: 1 });
+const worldRenderer = new GameRenderer(world, { focus: spaceship, width: 450, height: 450, zoom: 1 });
 
 world.addObject(spaceship);
 
 const controller = new PlayerController(spaceship);
-const gui = new GUI(world);
 
 let debugPanel: DebugPanel | undefined;
 if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
@@ -76,7 +74,6 @@ function update() {
   asteroidManager.update(deltaTime);
 
   debugPanel?.update(deltaTime);
-  gui.update(deltaTime);
 
   worldRenderer.render();
 
