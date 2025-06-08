@@ -58,3 +58,7 @@ jobs:
           docker tag ghcr.io/${REPO_OWNER}/asteroids:development ghcr.io/${REPO_OWNER}/asteroids:latest
           docker push ghcr.io/${REPO_OWNER}/asteroids:${TAG}
           docker push ghcr.io/${REPO_OWNER}/asteroids:latest
+
+      - name: Trigger webhook
+        run: |
+          curl -X POST -H "Content-Type: application/json" $WEBHOOK_URL
