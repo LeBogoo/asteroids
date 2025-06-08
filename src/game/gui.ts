@@ -90,6 +90,19 @@ export class GUI implements Updateable {
 
     fragmentsCounter.textContent = "Score: 0";
     this.guiContainer.appendChild(fragmentsCounter);
+
+    const versionText = document.createElement("span");
+    versionText.setAttribute("id", "version-text");
+    versionText.style.position = "absolute";
+    versionText.style.bottom = "10px";
+    versionText.style.right = "10px";
+    versionText.style.fontFamily = "monospace";
+    versionText.style.fontSize = "12px";
+    versionText.style.color = "white";
+    versionText.style.opacity = "0.25";
+
+    versionText.textContent = import.meta.env.VITE_VERSION + "-" + import.meta.env.VITE_HASH;
+    this.guiContainer.appendChild(versionText);
   }
 
   update(_deltaTime: number): void {

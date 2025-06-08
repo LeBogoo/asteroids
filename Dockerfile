@@ -2,6 +2,14 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
+# Accept build arguments
+ARG VERSION
+ARG HASH
+
+# Set environment variables
+ENV VITE_VERSION=${VERSION}
+ENV VITE_HASH=${HASH}
+
 COPY package*.json ./
 RUN npm install
 
