@@ -16,8 +16,10 @@ export abstract class GameObject implements Moveable, Updateable {
   lifeTime: number = 0;
 
   abstract health: number;
+  abstract maxHealth: number;
 
   radius: number = 0;
+  checkCollisions: boolean = true;
 
   element!: SVGElement;
 
@@ -99,6 +101,7 @@ export abstract class GameObject implements Moveable, Updateable {
     this.rotation += this.angularVelocity * deltaTime;
 
     // check collisions with other game objects
+    if (!this.checkCollisions) return;
     for (const gameObject of this.world?.getObjects() || []) {
       if (gameObject !== this && this.isColliding(gameObject)) {
         gameObject.collide(this, false);

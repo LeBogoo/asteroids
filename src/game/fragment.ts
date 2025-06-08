@@ -11,6 +11,7 @@ export class Fragment extends GameObject {
   face: Face;
   deathTime: number;
   health: number = 1;
+  maxHealth: number = 1;
 
   private get endOfLife(): boolean {
     return this.lifeTime + 3 > this.deathTime;

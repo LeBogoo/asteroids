@@ -13,6 +13,7 @@ export class Asteroid extends GameObject {
   customVelocity: Vector;
   points: Vector[] = [];
   health: number = 1;
+  maxHealth: number = 1;
 
   constructor(pos: Vector, angle: number, radius: number) {
     super(pos, angle, radius);

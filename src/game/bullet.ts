@@ -10,6 +10,7 @@ const MAX_BULLET_LIFETIME = 1000 * 2;
 export class Bullet extends GameObject {
   spawnTime: number = 0;
   health: number = 1;
+  maxHealth: number = 1;
 
   constructor(pos: Vector, angle: number) {
     super(pos, angle, 2);

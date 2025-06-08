@@ -24,6 +24,7 @@ export class Spaceship extends GameObject {
   }
 
   health: number = 20;
+  maxHealth: number = 20;
 
   constructor(isPlayer: boolean, pos: Vector, angle: number) {
     super(pos, angle, 15);
