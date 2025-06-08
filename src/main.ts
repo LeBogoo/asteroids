@@ -13,10 +13,13 @@ const game = new Game({
   renderOptions: { resize: true, zoom: 1 },
 });
 
-const debugPanel = new DebugPanel(game.world, game.spaceship);
-game.onUpdate = (deltaTime: number) => {
-  debugPanel.update(deltaTime);
-};
+let debugPanel: DebugPanel | undefined;
+if (localStorage.getItem("debug") == "true") {
+  debugPanel = new DebugPanel(game.world, game.spaceship);
+  game.onUpdate = (deltaTime: number) => {
+    debugPanel?.update(deltaTime);
+  };
+}
 
 SoundManager.world = game.world;
 game.start();
