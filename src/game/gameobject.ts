@@ -106,6 +106,13 @@ export abstract class GameObject implements Moveable, Updateable {
     this.position.y -= Math.cos((this.rotation * Math.PI) / 180) * this.velocity * deltaTime;
     this.rotation += this.angularVelocity * deltaTime;
 
+    // clamp rotation to [-180,180]
+    if (this.rotation < -180) {
+      this.rotation += 360;
+    } else if (this.rotation > 180) {
+      this.rotation -= 360;
+    }
+
     // check collisions with other game objects
     if (!this.checkCollisions) return;
     for (const gameObject of this.world?.getObjects() || []) {
