@@ -6,8 +6,10 @@ import { SoundManager } from "./soundmanger";
 import * as Utils from "./utils";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
+import { HealthItem } from "./health-item";
 
 const EXPLODE_FORCE = 1;
+const HEALTH_SPAWN_CHANCE = 0.1;
 
 export class Asteroid extends GameObject {
   customVelocity: Vector;
@@ -57,6 +59,10 @@ export class Asteroid extends GameObject {
       let fragment = new Fragment(pos, this.radius / 2, face, fragmentVelocity);
 
       this.world?.addObject(fragment);
+    }
+
+    if (Math.random() <= HEALTH_SPAWN_CHANCE) {
+      this.world?.addObject(new HealthItem(this.position, 0, 20));
     }
 
     SoundManager.playSoundAt("explode_big", this.position);
