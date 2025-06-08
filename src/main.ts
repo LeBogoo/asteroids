@@ -1,76 +1,33 @@
 import { Spaceship } from "./game/spaceship";
 import { Vector } from "./game/vector";
 import "./style.css";
-import type { GameObject } from "./game/gameobject";
 import { World } from "./game/world";
 import { SoundManager } from "./game/soundmanger";
 import { AsteroidManager } from "./game/asteroid-manager";
 import { DebugPanel } from "./debug-panel";
 import { GUI } from "./game/gui";
-
-let offset: Vector = Vector.zero();
-
-let gameObjects: GameObject[] = [];
-
-const gameArea = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-gameArea.setAttribute("style", "border: 1px solid white; display: block;");
-document.body.appendChild(gameArea);
+import { PlayerController } from "./game/controller/player-controller";
+import { WorldRenderer } from "./game/world-renderer";
 
 SoundManager.loadSound("shoot", "shoot.wav");
 SoundManager.loadSound("explode_big", "explode_big.wav");
 SoundManager.loadSound("explode_small", "explode_small.wav");
 
-function resizeGameArea() {
-  gameArea.setAttribute("width", `${window.innerWidth}`);
-  gameArea.setAttribute("height", `${window.innerHeight}`);
-}
-
-window.addEventListener("resize", resizeGameArea);
-resizeGameArea();
-
 const world = new World();
 SoundManager.world = world;
 
-world.onAdd = (gameObject: GameObject) => {
-  gameArea.appendChild(gameObject.getElement());
-};
-
-world.onRemove = (gameObject: GameObject) => {
-  gameArea.removeChild(gameObject.getElement());
-};
-
 const spaceship: Spaceship = new Spaceship(true, Vector.zero(), 0);
+const worldRenderer = new WorldRenderer(world, spaceship, { width: 400, height: 400, zoom: 1 });
+
 world.addObject(spaceship);
 
+const controller = new PlayerController(spaceship);
 const gui = new GUI(world);
 
 let debugPanel: DebugPanel | undefined;
 if (localStorage.getItem("debug") == "true") debugPanel = new DebugPanel(world, spaceship);
 
 const asteroidManager = new AsteroidManager(world, spaceship);
-
-window.addEventListener("keydown", (event) => {
-  if (event.repeat) return;
-
-  const key = event.key.toLowerCase();
-
-  if (key == " ") spaceship.shoot();
-  if (key == "w") spaceship.forward = 1;
-  if (key == "s") spaceship.forward = -1;
-  if (key == "a") spaceship.turn = -1;
-  if (key == "d") spaceship.turn = 1;
-});
-
-window.addEventListener("keyup", (event) => {
-  const key = event.key.toLowerCase();
-
-  if (key == "w") spaceship.forward = 0;
-  if (key == "s") spaceship.forward = 0;
-  if (key == "a") spaceship.turn = 0;
-  if (key == "d") spaceship.turn = 0;
-});
-
-gameObjects.push(spaceship);
 
 const favicon = document.createElement("link");
 favicon.rel = "icon";
@@ -111,15 +68,14 @@ function update() {
   const deltaTime = (now - lastUpdate) / 1000;
   lastUpdate = now;
 
+  controller.update(deltaTime);
   world.update(deltaTime);
   asteroidManager.update(deltaTime);
 
   debugPanel?.update(deltaTime);
   gui.update(deltaTime);
 
-  offset.x = spaceship.position.x - window.innerWidth / 2;
-  offset.y = spaceship.position.y - window.innerHeight / 2;
-  gameArea.setAttribute("viewBox", `${offset.x} ${offset.y} ${window.innerWidth} ${window.innerHeight}`);
+  worldRenderer.render();
 
   requestAnimationFrame(update);
 }

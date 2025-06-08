@@ -25,7 +25,6 @@ export class World implements Updateable {
   update(deltaTime: number): void {
     for (const gameObject of this.gameObjects) {
       gameObject.update(deltaTime);
-      gameObject.updateElement();
     }
   }
 
