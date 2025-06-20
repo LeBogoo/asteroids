@@ -22,6 +22,9 @@ export class GameRenderer {
   private world: World;
   private svgElement: SVGSVGElement;
   private healthContainer!: SVGGElement;
+  private fuelContainer?: SVGGElement;
+  private fuelIndicator?: SVGRectElement;
+  private gameOverText!: SVGTextElement;
   private fragmentsText!: SVGTextElement;
   private versionText!: SVGTextElement;
   private options: KnownGameRendererOptions;
@@ -107,6 +110,37 @@ export class GameRenderer {
 
     this.svgElement.appendChild(this.healthContainer);
 
+    if (this.options.focus instanceof Spaceship) {
+      this.fuelContainer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+
+      this.fuelIndicator = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      this.fuelIndicator.setAttribute("width", "10");
+      this.fuelIndicator.setAttribute("height", "100");
+      this.fuelIndicator.setAttribute("fill", "rgb(227, 166, 0)");
+      this.fuelContainer.appendChild(this.fuelIndicator);
+      this.svgElement.appendChild(this.fuelContainer);
+
+      const fuelOutline = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      fuelOutline.setAttribute("width", (10 + 2 * outlinePadding).toString());
+      fuelOutline.setAttribute("height", (100 + 2 * outlinePadding).toString());
+      fuelOutline.setAttribute("x", `-${outlinePadding}`);
+      fuelOutline.setAttribute("y", `-${outlinePadding}`);
+      fuelOutline.setAttribute("fill", "none");
+      fuelOutline.setAttribute("stroke", GlobalOptions.THEME_COLOR);
+      fuelOutline.setAttribute("stroke-width", "2");
+      this.fuelContainer.appendChild(fuelOutline);
+    }
+
+    this.gameOverText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    this.gameOverText.setAttribute("font-size", "40");
+    this.gameOverText.setAttribute("font-family", "monospace");
+    this.gameOverText.setAttribute("fill", GlobalOptions.THEME_COLOR);
+    this.gameOverText.setAttribute("text-anchor", "middle");
+    this.gameOverText.setAttribute("dominant-baseline", "hanging");
+    this.gameOverText.setAttribute("opacity", "0");
+    this.gameOverText.textContent = "Game Over";
+    this.svgElement.appendChild(this.gameOverText);
+
     this.fragmentsText = document.createElementNS("http://www.w3.org/2000/svg", "text");
     this.fragmentsText.setAttribute("font-size", "20");
     this.fragmentsText.setAttribute("font-family", "monospace");
@@ -153,6 +187,16 @@ export class GameRenderer {
       `translate(${this.offset.x + 10}, ${this.offset.y + this.options.height / this.options.zoom - 20 - 10})`
     );
 
+    this.fuelContainer?.setAttribute(
+      "transform",
+      `translate(${this.offset.x + 10}, ${this.offset.y + this.options.height / this.options.zoom - 145})`
+    );
+
+    this.gameOverText.setAttribute(
+      "transform",
+      `translate(${this.absoluteX(0)}, ${this.absoluteY(-this.options.zoom * 100)})`
+    );
+
     const health = this.options.focus?.health || 0;
     const polygons = this.healthContainer.querySelectorAll<SVGPolygonElement>("polygon[data-health-indicator]");
     polygons.forEach((polygon, index) => {
@@ -162,6 +206,20 @@ export class GameRenderer {
         polygon.setAttribute("fill", "rgb(33, 33, 33)");
       }
     });
+
+    if (this.options.focus instanceof Spaceship) {
+      const spaceship = this.options.focus as Spaceship;
+      const fuel = spaceship.fuel;
+      this.fuelIndicator!.setAttribute("height", fuel.toString());
+      this.fuelIndicator!.setAttribute("y", (100 - fuel).toString());
+
+      if (spaceship.isDestroyed || spaceship.isOutOfFuel) {
+        this.gameOverText.setAttribute("opacity", "1");
+        this.gameOverText.textContent = spaceship.isDestroyed
+          ? "Game Over: Spaceship Destroyed"
+          : "Game Over: Out of Fuel";
+      }
+    }
 
     if (this.options.focus instanceof Spaceship) {
       const spaceship = this.options.focus as Spaceship;

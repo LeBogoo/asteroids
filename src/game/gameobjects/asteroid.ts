@@ -7,11 +7,19 @@ import * as Utils from "../utils";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { HealthItem } from "./items/health-item";
+import { FuelItem } from "./items/fuel-item";
 import { Random } from "../random";
 import { GlobalOptions } from "../../global-options";
 
 const EXPLODE_FORCE = 1;
-const HEALTH_SPAWN_CHANCE = 0.1;
+const ITEM_SPAWN_CHANCE = 0.2;
+
+function getRandomItem(random: Random, pos: Vector) {
+  const items = [HealthItem, FuelItem];
+
+  const itemClass = items[Math.floor(random.next() * items.length)];
+  return new itemClass(random, pos);
+}
 
 export class Asteroid extends GameObject {
   customVelocity: Vector;
@@ -63,8 +71,9 @@ export class Asteroid extends GameObject {
       this.world?.addObject(fragment);
     }
 
-    if (this.random.next() <= HEALTH_SPAWN_CHANCE) {
-      this.world?.addObject(new HealthItem(this.random, this.position));
+    if (this.random.next() <= ITEM_SPAWN_CHANCE) {
+      const item = getRandomItem(this.random, this.position);
+      this.world?.addObject(item);
     }
 
     SoundManager.playSoundAt("explode_big", this.position);

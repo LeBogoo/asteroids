@@ -14,7 +14,12 @@ export class Spaceship extends GameObject {
   private isThrusting: boolean = false;
   private flame!: SVGElement;
   private _isPlayer: boolean;
-  private isDestroyed: boolean = false;
+
+  isDestroyed: boolean = false;
+
+  get isOutOfFuel(): boolean {
+    return this.fuel <= 0;
+  }
 
   fragmentsDestroyed: number = 0;
 
@@ -27,6 +32,9 @@ export class Spaceship extends GameObject {
 
   health: number = 20;
   maxHealth: number = 20;
+
+  fuel: number = 100;
+  maxFuel: number = 100;
 
   constructor(random: Random, isPlayer: boolean, pos: Vector, angle: number) {
     super(random, pos, angle, 15);
@@ -83,9 +91,7 @@ export class Spaceship extends GameObject {
   update(deltaTime: number): void {
     super.update(deltaTime);
 
-    if (this.isDestroyed) {
-      return;
-    }
+    if (this.isDestroyed || this.isOutOfFuel) return;
 
     this.targetVelocity = this.forward * 300;
     this.targetAngularVelocity = this.turn * 200;
@@ -96,6 +102,18 @@ export class Spaceship extends GameObject {
 
     if (this.targetVelocity == 0 && this.isThrusting) {
       this.stopThrusting();
+    }
+
+    if (this.isThrusting) {
+      this.fuel -= 1 * deltaTime;
+      if (this.fuel <= 0) {
+        this.stopThrusting();
+        this.fuel = 0;
+        this.turn = 0;
+        this.forward = 0;
+        this.targetVelocity = 0;
+        this.targetAngularVelocity = 0;
+      }
     }
   }
 
