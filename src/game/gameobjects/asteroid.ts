@@ -64,7 +64,7 @@ export class Asteroid extends GameObject {
     }
 
     if (this.random.next() <= HEALTH_SPAWN_CHANCE) {
-      this.world?.addObject(new HealthItem(this.random, this.position, 0, 20));
+      this.world?.addObject(new HealthItem(this.random, this.position));
     }
 
     SoundManager.playSoundAt("explode_big", this.position);
