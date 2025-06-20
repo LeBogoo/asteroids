@@ -1,6 +1,6 @@
 import { GlobalOptions } from "../global-options";
-import type { GameObject } from "./gameobject";
-import { Spaceship } from "./spaceship";
+import type { GameObject } from "./gameobjects/gameobject";
+import { Spaceship } from "./gameobjects/spaceship";
 import { Vector } from "./vector";
 import type { World } from "./world";
 

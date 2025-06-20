@@ -1,4 +1,4 @@
-import { Spaceship } from "./spaceship";
+import { Spaceship } from "./gameobjects/spaceship";
 import type { Vector } from "./vector";
 import type { World } from "./world";
 import * as Utils from "./utils";

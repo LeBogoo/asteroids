@@ -1,14 +1,14 @@
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
-import type { Face } from "./interfaces/face";
-import { Vector } from "./vector";
-import { SoundManager } from "./soundmanger";
-import * as Utils from "./utils";
+import type { Face } from "../interfaces/face";
+import { Vector } from "../vector";
+import { SoundManager } from "../soundmanger";
+import * as Utils from "../utils";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
-import { HealthItem } from "./health-item";
-import { Random } from "./random";
-import { GlobalOptions } from "../global-options";
+import { HealthItem } from "./items/health-item";
+import { Random } from "../random";
+import { GlobalOptions } from "../../global-options";
 
 const EXPLODE_FORCE = 1;
 const HEALTH_SPAWN_CHANCE = 0.1;

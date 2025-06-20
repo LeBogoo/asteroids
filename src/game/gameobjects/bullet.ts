@@ -1,11 +1,11 @@
-import { GlobalOptions } from "../global-options";
+import { GlobalOptions } from "../../global-options";
 import { Asteroid } from "./asteroid";
 import { DespawnableGameObject } from "./despawnable-game-object";
 import { Fragment } from "./fragment";
 import { GameObject } from "./gameobject";
-import type { Random } from "./random";
+import type { Random } from "../random";
 import { Spaceship } from "./spaceship";
-import { Vector } from "./vector";
+import { Vector } from "../vector";
 
 const BULLET_SPEED = 500;
 const MAX_BULLET_LIFETIME = 1000 * 2;

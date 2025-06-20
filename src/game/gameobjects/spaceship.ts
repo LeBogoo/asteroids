@@ -1,11 +1,11 @@
 import { Bullet } from "./bullet";
 import { GameObject } from "./gameobject";
-import { Vector } from "./vector";
-import { SoundManager } from "./soundmanger";
+import { Vector } from "../vector";
+import { SoundManager } from "../soundmanger";
 import { Asteroid } from "./asteroid";
 import { Fragment } from "./fragment";
-import type { Random } from "./random";
-import { GlobalOptions } from "../global-options";
+import type { Random } from "../random";
+import { GlobalOptions } from "../../global-options";
 
 const SHOOT_COOLDOWN = 50;
 

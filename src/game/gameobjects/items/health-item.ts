@@ -1,7 +1,7 @@
-import type { GameObject } from "./gameobject";
+import type { GameObject } from "../gameobject";
 import { Item } from "./item";
-import { Spaceship } from "./spaceship";
-import { Vector } from "./vector";
+import { Spaceship } from "../spaceship";
+import { Vector } from "../../vector";
 
 export class HealthItem extends Item {
   healthGain = 2;

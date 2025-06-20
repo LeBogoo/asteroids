@@ -1,6 +1,6 @@
-import { Asteroid } from "./game/asteroid";
+import { Asteroid } from "./game/gameobjects/asteroid";
 import type { Updateable } from "./game/interfaces/updateable";
-import type { Spaceship } from "./game/spaceship";
+import type { Spaceship } from "./game/gameobjects/spaceship";
 import type { World } from "./game/world";
 
 export class DebugPanel implements Updateable {

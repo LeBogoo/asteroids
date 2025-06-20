@@ -1,5 +1,5 @@
 import type { Controller } from "../interfaces/controller";
-import type { Spaceship } from "../spaceship";
+import type { Spaceship } from "../gameobjects/spaceship";
 
 export class PlayerController implements Controller {
   spaceship: Spaceship;

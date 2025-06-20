@@ -1,9 +1,9 @@
-import type { Moveable } from "./interfaces/moveable";
-import type { Updateable } from "./interfaces/updateable";
-import type { Vector } from "./vector";
-import * as Utils from "./utils";
-import type { World } from "./world";
-import type { Random } from "./random";
+import type { Moveable } from "../interfaces/moveable";
+import type { Updateable } from "../interfaces/updateable";
+import type { Vector } from "../vector";
+import * as Utils from "../utils";
+import type { World } from "../world";
+import type { Random } from "../random";
 
 export abstract class GameObject implements Moveable, Updateable {
   parent: GameObject | null = null;

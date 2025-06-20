@@ -1,5 +1,5 @@
-import { DespawnableGameObject } from "./despawnable-game-object";
-import { GameObject } from "./gameobject";
+import { DespawnableGameObject } from "../despawnable-game-object";
+import { GameObject } from "../gameobject";
 
 export abstract class Item extends DespawnableGameObject {
   despawnTime: number = 10;

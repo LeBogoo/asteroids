@@ -1,4 +1,4 @@
-import type { GameObject } from "./gameobject";
+import type { GameObject } from "./gameobjects/gameobject";
 import type { Updateable } from "./interfaces/updateable";
 
 export class World implements Updateable {

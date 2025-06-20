@@ -1,8 +1,8 @@
-import { Asteroid } from "./asteroid";
+import { Asteroid } from "./gameobjects/asteroid";
 import { Vector } from "./vector";
 import type { World } from "./world";
 import type { Updateable } from "./interfaces/updateable";
-import type { Spaceship } from "./spaceship";
+import type { Spaceship } from "./gameobjects/spaceship";
 import { Random } from "./random";
 
 export class AsteroidManager implements Updateable {

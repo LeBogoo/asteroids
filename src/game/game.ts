@@ -3,7 +3,7 @@ import { PlayerController } from "./controller/player-controller";
 import { GameRenderer, type GameRendererOptions } from "./game-renderer";
 import type { Controller } from "./interfaces/controller";
 import { Random } from "./random";
-import { Spaceship } from "./spaceship";
+import { Spaceship } from "./gameobjects/spaceship";
 import { Vector } from "./vector";
 import { World } from "./world";
 

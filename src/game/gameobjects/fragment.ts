@@ -1,13 +1,13 @@
 import { GameObject } from "./gameobject";
-import type { Face } from "./interfaces/face";
-import type { Vector } from "./vector";
-import * as Utils from "./utils";
-import { SoundManager } from "./soundmanger";
+import type { Face } from "../interfaces/face";
+import type { Vector } from "../vector";
+import * as Utils from "../utils";
+import { SoundManager } from "../soundmanger";
 import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { DespawnableGameObject } from "./despawnable-game-object";
-import { Random } from "./random";
-import { GlobalOptions } from "../global-options";
+import { Random } from "../random";
+import { GlobalOptions } from "../../global-options";
 
 export class Fragment extends DespawnableGameObject {
   customVelocity: Vector;
