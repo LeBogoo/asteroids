@@ -7,6 +7,7 @@ import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { DespawnableGameObject } from "./despawnable-game-object";
 import { Random } from "./random";
+import { GlobalOptions } from "../global-options";
 
 export class Fragment extends DespawnableGameObject {
   customVelocity: Vector;
@@ -50,8 +51,8 @@ export class Fragment extends DespawnableGameObject {
     const points = this.face.map((point) => `${point.x},${point.y}`).join(" ");
     fragment.setAttribute("points", points);
 
-    fragment.setAttribute("stroke", "white");
-    fragment.setAttribute("stroke-width", "1");
+    fragment.setAttribute("stroke", GlobalOptions.THEME_COLOR);
+    fragment.setAttribute("stroke-width", "2");
 
     element.appendChild(fragment);
 

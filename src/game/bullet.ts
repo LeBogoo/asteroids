@@ -1,3 +1,4 @@
+import { GlobalOptions } from "../global-options";
 import { Asteroid } from "./asteroid";
 import { DespawnableGameObject } from "./despawnable-game-object";
 import { Fragment } from "./fragment";
@@ -44,8 +45,8 @@ export class Bullet extends DespawnableGameObject {
     const points = hullPoints.map((point) => `${point.x},${point.y}`).join(" ");
     hull.setAttribute("points", points);
 
-    hull.setAttribute("stroke", "white");
-    hull.setAttribute("stroke-width", "1");
+    hull.setAttribute("stroke", GlobalOptions.THEME_COLOR);
+    hull.setAttribute("stroke-width", "2");
 
     element.appendChild(hull);
 

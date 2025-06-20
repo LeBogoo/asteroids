@@ -5,6 +5,7 @@ import { SoundManager } from "./soundmanger";
 import { Asteroid } from "./asteroid";
 import { Fragment } from "./fragment";
 import type { Random } from "./random";
+import { GlobalOptions } from "../global-options";
 
 const SHOOT_COOLDOWN = 50;
 
@@ -159,8 +160,8 @@ export class Spaceship extends GameObject {
     const points = hullPoints.map((point) => `${point.x},${point.y}`).join(" ");
     hull.setAttribute("points", points);
 
-    hull.setAttribute("stroke", "white");
-    hull.setAttribute("stroke-width", "1");
+    hull.setAttribute("stroke", GlobalOptions.THEME_COLOR);
+    hull.setAttribute("stroke-width", "2");
 
     element.appendChild(hull);
 

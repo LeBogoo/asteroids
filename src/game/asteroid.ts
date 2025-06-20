@@ -8,6 +8,7 @@ import { Bullet } from "./bullet";
 import { Spaceship } from "./spaceship";
 import { HealthItem } from "./health-item";
 import { Random } from "./random";
+import { GlobalOptions } from "../global-options";
 
 const EXPLODE_FORCE = 1;
 const HEALTH_SPAWN_CHANCE = 0.1;
@@ -87,8 +88,8 @@ export class Asteroid extends GameObject {
     const pointsString = this.points.map((point) => `${point.x},${point.y}`).join(" ");
 
     polygon.setAttribute("points", pointsString);
-    polygon.setAttribute("stroke", "white");
-    polygon.setAttribute("stroke-width", "1");
+    polygon.setAttribute("stroke", GlobalOptions.THEME_COLOR);
+    polygon.setAttribute("stroke-width", "2");
     polygon.setAttribute("fill", "none");
     element.appendChild(polygon);
 

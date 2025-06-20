@@ -1,3 +1,4 @@
+import { GlobalOptions } from "../global-options";
 import type { GameObject } from "./gameobject";
 import { Spaceship } from "./spaceship";
 import { Vector } from "./vector";
@@ -30,7 +31,7 @@ export class GameRenderer {
     this.world = world;
     this.svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-    this.svgElement.setAttribute("style", "border: 1px solid white; display: block;");
+    this.svgElement.setAttribute("style", "border: 2px solid " + GlobalOptions.THEME_COLOR + "; display: block;");
     document.body.appendChild(this.svgElement);
 
     this.options = {
@@ -84,7 +85,7 @@ export class GameRenderer {
       ${-outlinePadding},${healthHeight + outlinePadding}`
     );
     healthbarOutline.setAttribute("fill", "none");
-    healthbarOutline.setAttribute("stroke", "white");
+    healthbarOutline.setAttribute("stroke", GlobalOptions.THEME_COLOR);
     healthbarOutline.setAttribute("stroke-width", "2");
     this.healthContainer.appendChild(healthbarOutline);
 
@@ -109,7 +110,7 @@ export class GameRenderer {
     this.fragmentsText = document.createElementNS("http://www.w3.org/2000/svg", "text");
     this.fragmentsText.setAttribute("font-size", "20");
     this.fragmentsText.setAttribute("font-family", "monospace");
-    this.fragmentsText.setAttribute("fill", "white");
+    this.fragmentsText.setAttribute("fill", GlobalOptions.THEME_COLOR);
     this.fragmentsText.setAttribute("text-anchor", "end");
     this.fragmentsText.setAttribute("dominant-baseline", "hanging");
     this.svgElement.appendChild(this.fragmentsText);
